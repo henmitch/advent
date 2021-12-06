@@ -49,7 +49,6 @@ def load_data(path) -> List[List[int]]:
         points = line.split(" -> ")
         out.append([tuple(map(int, point.split(","))) for point in points])
 
-
     return out
 
 
@@ -116,6 +115,7 @@ def main():
     lines = make_lines(data)
     print(lines)
     logging.info(f"Finished in {time.time() - start:.2f} seconds")
+
 
 if __name__ == "__main__":
     logging.info("Main")

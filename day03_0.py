@@ -64,7 +64,7 @@ for i in range(len(data[0]) - 1):
         gamma_str += "0"
 
 gamma = int(gamma_str, 2)
-epsilon = gamma ^ int("1"*(len(data[0]) - 1), 2)
+epsilon = gamma ^ int("1" * (len(data[0]) - 1), 2)
 
 out = gamma * epsilon
 print(f"The power consumption is {out}")

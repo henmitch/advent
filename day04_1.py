@@ -15,8 +15,8 @@ numbers equal to 148 for a final score of 148 * 13 = 1924.
 Figure out which board will win last. Once it wins, what would its final score
 be?
 """
-import os
 import logging
+import os
 from typing import List
 
 import day04_0 as old
@@ -24,7 +24,6 @@ import day04_0 as old
 logging.basicConfig(level=logging.DEBUG)
 
 TEST_PATH = os.path.join(os.path.dirname(__file__), "testing", "day04.txt")
-
 
 
 def play_to_lose(numbers: List[int], boards: List[old.Board]) -> int:
@@ -58,6 +57,7 @@ def main():
     assert test == 1924
     numbers, boards = old.load_data(old.PATH)
     print(play_to_lose(numbers, boards))
+
 
 if __name__ == "__main__":
     main()

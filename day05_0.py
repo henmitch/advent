@@ -74,7 +74,6 @@ def load_data(path):
         points = line.split(" -> ")
         out.append([tuple(map(int, point.split(","))) for point in points])
 
-
     return out
 
 
@@ -114,6 +113,7 @@ def make_lines(data: List[List[int]]):
 
     return out
 
+
 def find_overlap(points: List[List[int]]):
     """Find the points where two lines overlap"""
     logging.info("Finding overlap")
@@ -130,6 +130,7 @@ def count_overlap(points: List[List[int]]):
     logging.info("Counting overlap")
     return len(find_overlap(points))
 
+
 def main():
     logging.info(time.time())
     logging.info("Starting")
@@ -142,6 +143,7 @@ def main():
     data = filter_(load_data(DATA_PATH))
     lines = make_lines(data)
     print(count_overlap(lines))
+
 
 if __name__ == "__main__":
     logging.info("Main")

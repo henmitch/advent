@@ -70,6 +70,7 @@ path = os.path.join(data_dir, "day03_0.txt")
 with open(path, "r") as f:
     data = f.read().splitlines()
 
+
 def filter_(lst: list, bit: str, n: int = 0) -> int:
     logging.info(f"{len(lst)=} {bit=} {n=}")
     if len(lst) == 1:
@@ -90,6 +91,7 @@ def filter_(lst: list, bit: str, n: int = 0) -> int:
         logging.info("Most common value is 0")
         next_lst = [x for x in lst if x[n] != bit]
     return filter_(next_lst, bit, n + 1)
+
 
 logging.info("Oxygen generator rating")
 oxygen_rating = filter_(data, "1")
