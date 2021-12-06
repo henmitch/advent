@@ -1,3 +1,4 @@
+"""https://adventofcode.com/2021/day/1"""
 import os
 
 data_dir = os.path.join(os.path.dirname(__file__), "data")
