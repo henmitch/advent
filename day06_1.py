@@ -44,14 +44,14 @@ def total_fish(count: dict) -> int:
 def test():
     data = load_data(TEST_PATH)
     count = start(data)
-    for _ in range(80):
+    for _ in range(256):
         count = step(count)
-    assert total_fish(count) == 5934
+    assert total_fish(count) == 26984457539
 
 def main():
     data = load_data(DATA_PATH)
     count = start(data)
-    for _ in range(80):
+    for _ in range(256):
         count = step(count)
     print(total_fish(count))
 
