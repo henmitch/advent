@@ -18,6 +18,6 @@ for line in data:
     elif line.startswith("up"):
         down -= int(re.findall(r"\d+", line)[0])
 
-out = forward * down
+out = forward*down
 
 print(out)

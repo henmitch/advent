@@ -15,7 +15,7 @@ for line in data:
     if line.startswith("forward"):
         x = int(re.findall(r"\d+", line)[0])
         forward += x
-        down += x * aim
+        down += x*aim
     elif line.startswith("down"):
         x = int(re.findall(r"\d+", line)[0])
         aim += x
@@ -23,6 +23,6 @@ for line in data:
         x = int(re.findall(r"\d+", line)[0])
         aim -= x
 
-out = forward * down
+out = forward*down
 
 print(out)

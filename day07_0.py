@@ -18,7 +18,7 @@ def load_data(path: str) -> list:
 
 def median(data: list) -> int:
     """Calculate median of data"""
-    return sorted(data)[len(data) // 2]
+    return sorted(data)[len(data)//2]
 
 
 def total_distance(data: list, base: int) -> int:
@@ -35,6 +35,7 @@ def test():
     """Test the solution"""
     data = load_data(TEST_PATH)
     assert fuel(data) == 37
+
 
 if __name__ == "__main__":
     test()

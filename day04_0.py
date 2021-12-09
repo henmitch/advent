@@ -50,7 +50,7 @@ def score_board(board: Board, last_number: int) -> int:
         for num in row:
             if num is not None:
                 score += num
-    return score * last_number
+    return score*last_number
 
 
 def play_to_win(numbers: List[int], boards: List[Board]) -> int:

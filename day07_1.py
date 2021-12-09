@@ -1,6 +1,5 @@
 """https://adventofcode.com/2021/day/7"""
 import logging
-import math
 import os
 
 logging.basicConfig(level=logging.INFO)
@@ -19,7 +18,7 @@ def load_data(path: str) -> list:
 
 def total_distance(data: list, base: int) -> int:
     """Calculate total distance"""
-    return int(sum((abs(x - base)) * (1 + abs(x - base)) / 2 for x in data))
+    return int(sum((abs(x - base))*(1 + abs(x - base))/2 for x in data))
 
 
 def optimize(data: list) -> int:

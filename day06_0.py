@@ -9,10 +9,12 @@ test_dir = os.path.join(os.path.dirname(__file__), "test")
 DATA_PATH = os.path.join(data_dir, "day06_0.txt")
 TEST_PATH = os.path.join(test_dir, "day06_0.txt")
 
+
 def load_data(path: str) -> list:
     """Load data from file"""
     with open(path, "r") as f:
         return list(map(int, f.read().split(",")))
+
 
 def start(fishes: list) -> list:
     """Count the number of fishes with each timer value"""
@@ -37,9 +39,11 @@ def step(count: dict) -> dict:
 
     return new_count
 
+
 def total_fish(count: dict) -> int:
     """Count the total number of fish"""
     return sum(count.values())
+
 
 def test():
     data = load_data(TEST_PATH)
@@ -48,12 +52,14 @@ def test():
         count = step(count)
     assert total_fish(count) == 5934
 
+
 def main():
     data = load_data(DATA_PATH)
     count = start(data)
     for _ in range(80):
         count = step(count)
     print(total_fish(count))
+
 
 if __name__ == "__main__":
     test()
