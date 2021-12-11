@@ -9,6 +9,7 @@ def synchronized(data: old.Grid) -> bool:
                 return False
     return True
 
+
 def run_until_synchronized(data: old.Grid) -> int:
     """Run until the grid is synchronized."""
     count = 0
@@ -22,9 +23,11 @@ def test():
     data = old.load_data(old.TEST_PATH)
     assert run_until_synchronized(data) == 195
 
+
 def main():
     data = old.load_data(old.DATA_PATH)
     print(run_until_synchronized(data))
+
 
 if __name__ == "__main__":
     test()
