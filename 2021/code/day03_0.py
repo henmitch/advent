@@ -1,8 +1,9 @@
 """https://adventofcode.com/2021/day/3"""
 import os
 
-data_dir = os.path.join(os.path.dirname(__file__), "data")
-path = os.path.join(data_dir, "day03_0.txt")
+import boilerplate as bp
+
+path = os.path.join(bp.data_dir, "day03.txt")
 with open(path, "r") as f:
     data = f.read().splitlines()
 

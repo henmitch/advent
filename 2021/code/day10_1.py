@@ -1,7 +1,6 @@
 """https://adventofcode.com/2021/day/10"""
-import re
-import os
 from typing import List
+
 import day10_0 as old
 
 

@@ -3,11 +3,12 @@ import logging
 import os
 from typing import List
 
+import boilerplate as bp
 import day04_0 as old
 
 logging.basicConfig(level=logging.DEBUG)
 
-TEST_PATH = os.path.join(os.path.dirname(__file__), "testing", "day04.txt")
+TEST_PATH = os.path.join(bp.test_dir, "day04.txt")
 
 
 def play_to_lose(numbers: List[int], boards: List[old.Board]) -> int:

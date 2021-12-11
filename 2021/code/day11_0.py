@@ -1,14 +1,14 @@
 """https://adventofcode.com/2021/day/11"""
 import itertools
-from typing import List, Tuple
 import os
+from typing import List, Tuple
+
+import boilerplate as bp
 
 Grid = List[List[int | str]]
 
-data_dir = os.path.join(os.path.dirname(__file__), "data")
-test_dir = os.path.join(os.path.dirname(__file__), "test")
-DATA_PATH = os.path.join(data_dir, "day11_0.txt")
-TEST_PATH = os.path.join(test_dir, "day11_0.txt")
+DATA_PATH = os.path.join(bp.data_dir, "day11.txt")
+TEST_PATH = os.path.join(bp.test_dir, "day11.txt")
 
 
 def load_data(path):
