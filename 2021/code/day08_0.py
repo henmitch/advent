@@ -3,10 +3,10 @@ import itertools
 import os
 from typing import List
 
-data_dir = os.path.join(os.path.dirname(__file__), "data")
-test_dir = os.path.join(os.path.dirname(__file__), "test")
-DATA_PATH = os.path.join(data_dir, "day08_0.txt")
-TEST_PATH = os.path.join(test_dir, "day08_0.txt")
+import boilerplate as bp
+
+DATA_PATH = os.path.join(bp.data_dir, "day08.txt")
+TEST_PATH = os.path.join(bp.test_dir, "day08.txt")
 
 def load_data(path):
     with open(path) as f:

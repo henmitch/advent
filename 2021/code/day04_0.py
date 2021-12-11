@@ -3,10 +3,11 @@ import os
 import re
 from typing import List
 
+import boilerplate as bp
+
 Board = List[List[int]]
 
-data_dir = os.path.join(os.path.dirname(__file__), "data")
-PATH = os.path.join(data_dir, "day04_0.txt")
+PATH = os.path.join(bp.data_dir, "day04.txt")
 
 
 def load_data(path):

@@ -1,6 +1,7 @@
 """https://adventofcode.com/2021/day/11"""
 import day11_0 as old
 
+
 def synchronized(data: old.Grid) -> bool:
     for row in data:
         for cell in row:

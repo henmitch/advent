@@ -2,8 +2,9 @@
 import os
 import re
 
-data_dir = os.path.join(os.path.dirname(__file__), "data")
-path = os.path.join(data_dir, "day02_0.txt")
+import boilerplate as bp
+
+path = os.path.join(bp.data_dir, "day02.txt")
 with open(path, "r") as f:
     data = f.readlines()
 

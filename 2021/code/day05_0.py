@@ -1,15 +1,16 @@
 """https://adventofcode.com/2021/day/5"""
+# This is very slow. The next one is much faster.
 import logging
 import os
 import time
 from typing import List
 
+import boilerplate as bp
+
 logging.basicConfig(level=logging.INFO)
 
-data_dir = os.path.join(os.path.dirname(__file__), "data")
-test_dir = os.path.join(os.path.dirname(__file__), "test")
-DATA_PATH = os.path.join(data_dir, "day05_0.txt")
-TEST_PATH = os.path.join(test_dir, "day05_0.txt")
+DATA_PATH = os.path.join(bp.data_dir, "day05.txt")
+TEST_PATH = os.path.join(bp.test_dir, "day05.txt")
 
 
 def load_data(path):
