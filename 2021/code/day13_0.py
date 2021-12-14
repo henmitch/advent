@@ -70,7 +70,7 @@ def pretty_print(points: Set[Tuple[int]]):
     out = [["." for _ in range(x_max + 1)] for __ in range(y_max + 1)]
     for point in points:
         out[point[1]][point[0]] = "#"
-    return "\n".join("".join(row) for row in out) + "\n"
+    return "\n".join(" ".join(row) for row in out) + "\n"
 
 
 def test():
