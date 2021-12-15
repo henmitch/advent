@@ -1,7 +1,8 @@
 """https://adventofcode.com/2021/day/12"""
 from typing import List, Tuple
-from day12_0 import DATA_PATH
+
 import day12_0 as old
+from day12_0 import DATA_PATH
 
 
 class RevisitableGraph(old.Graph):
