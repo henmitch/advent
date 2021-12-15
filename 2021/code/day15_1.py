@@ -1,5 +1,5 @@
 """https://adventofcode.com/2021/day/15"""
-from typing import Tuple
+import heapq
 
 import day15_0 as old
 
@@ -14,6 +14,7 @@ def cost(loc: old.Point, grid: old.Grid, size: int = 5) -> int:
     x_max, y_max = x_max + 1, y_max + 1
     if x >= size*x_max or y >= size*y_max:
         return float("inf")
+    # This is rather ugly.
     return ((grid[y%y_max][x%x_max] - 1) + x//x_max + y//y_max)%9 + 1
 
 
@@ -33,25 +34,21 @@ def a_star(grid: old.Grid,
     if end is None:
         end = old.bottom_right(grid)
 
-    to_review = {(start, 0)}
+    to_review = [(0, start)]
 
     so_far = {start: 0}
 
-    remaining_est = {start: old.dist(grid, start, end)}
-
     while to_review:
-        current = loc, _ = min(to_review, key=lambda x: x[1])
+        _, loc = heapq.heappop(to_review)
         if loc == end:
             return so_far[loc]
-
-        to_review.remove(current)
 
         for adjacent, cost in old.adjacents(grid, loc):
             new_cost = so_far[loc] + cost
             if adjacent not in so_far or new_cost < so_far[adjacent]:
                 so_far[adjacent] = new_cost
-                remaining_est[adjacent] = old.dist(grid, adjacent, end)
-                to_review.add((adjacent, new_cost))
+                d = old.dist(grid, adjacent, end)
+                heapq.heappush(to_review, (new_cost + d, adjacent))
 
 
 def test():
