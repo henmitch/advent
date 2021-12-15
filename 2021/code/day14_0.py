@@ -1,11 +1,12 @@
 """https://adventofcode.com/2021/day/14"""
-from typing import Dict, Tuple
-import boilerplate as bp
-
 import os
+from typing import Dict, Tuple
+
+import boilerplate as bp
 
 DATA_PATH = os.path.join(bp.data_dir, "day14.txt")
 TEST_PATH = os.path.join(bp.test_dir, "day14.txt")
+
 
 def load_data(path):
     with open(path) as f:
@@ -30,21 +31,22 @@ def polymerize_chain(chain: str, mapping: Dict[Tuple, str]) -> str:
         out += polymerize_unit(pair, mapping)
     return out
 
-def score_chain(chain: str, mapping: Dict[Tuple, str])-> int:
+
+def score_chain(chain: str, mapping: Dict[Tuple, str]) -> int:
     counts = {chain.count(l) for l in mapping.values()}
     return max(counts) - min(counts)
 
 
-def get_score(chain: str,
-              mapping: Dict[Tuple, str],
-              n_iter: int = 10) -> int:
+def get_score(chain: str, mapping: Dict[Tuple, str], n_iter: int = 10) -> int:
     for _ in range(n_iter):
         chain = polymerize_chain(chain, mapping)
     return score_chain(chain, mapping)
 
+
 def test():
     chain, mapping = load_data(TEST_PATH)
     assert get_score(chain, mapping) == 1588
+
 
 if __name__ == "__main__":
     test()
