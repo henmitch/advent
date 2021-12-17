@@ -171,8 +171,6 @@ def test():
     assert p4.get_subpackets()[0].get_literal_value() == 0
     assert p4.get_subpackets()[1].get_literal_value() == 0
 
-    print("Passed tests")
-
 
 if __name__ == "__main__":
     test()
