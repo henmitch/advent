@@ -1,13 +1,12 @@
 """https://adventofcode.com/2021/day/7"""
 import logging
-import os
 
 import boilerplate as bp
 
 logging.basicConfig(level=logging.INFO)
 
-DATA_PATH = os.path.join(bp.data_dir, "day07.txt")
-TEST_PATH = os.path.join(bp.test_dir, "day07.txt")
+DATA_PATH = bp.get_data_path()
+TEST_PATH = bp.get_test_path()
 
 
 def load_data(path: str) -> list:

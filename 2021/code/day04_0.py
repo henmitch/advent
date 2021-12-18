@@ -1,5 +1,4 @@
 """https://adventofcode.com/2021/day/4"""
-import os
 import re
 from typing import List
 
@@ -7,7 +6,7 @@ import boilerplate as bp
 
 Board = List[List[int]]
 
-PATH = os.path.join(bp.data_dir, "day04.txt")
+PATH = bp.get_data_path()
 
 
 def load_data(path):

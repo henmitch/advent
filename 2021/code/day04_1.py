@@ -1,6 +1,5 @@
 """https://adventofcode.com/2021/day/4"""
 import logging
-import os
 from typing import List
 
 import boilerplate as bp
@@ -8,7 +7,7 @@ import day04_0 as old
 
 logging.basicConfig(level=logging.DEBUG)
 
-TEST_PATH = os.path.join(bp.test_dir, "day04.txt")
+TEST_PATH = bp.get_test_path()
 
 
 def play_to_lose(numbers: List[int], boards: List[old.Board]) -> int:

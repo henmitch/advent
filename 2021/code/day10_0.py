@@ -1,12 +1,11 @@
 """https://adventofcode.com/2021/day/10"""
-import os
 import re
 from typing import List
 
 import boilerplate as bp
 
-DATA_PATH = os.path.join(bp.data_dir, "day10.txt")
-TEST_PATH = os.path.join(bp.test_dir, "day10.txt")
+DATA_PATH = bp.get_data_path()
+TEST_PATH = bp.get_test_path()
 
 VALID_PAIRS = re.compile(r"(?:\(\)|\{\}|\[\]|<>)")
 OPENERS = {"(", "{", "[", "<"}

@@ -1,9 +1,7 @@
 """https://adventofcode.com/2021/day/3"""
-import os
-
 import boilerplate as bp
 
-path = os.path.join(bp.data_dir, "day03.txt")
+path = bp.get_data_path()
 with open(path, "r") as f:
     data = f.read().splitlines()
 

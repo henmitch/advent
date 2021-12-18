@@ -1,7 +1,6 @@
 """https://adventofcode.com/2021/day/5"""
 # This is very slow. The next one is much faster.
 import logging
-import os
 import time
 from typing import List
 
@@ -9,8 +8,8 @@ import boilerplate as bp
 
 logging.basicConfig(level=logging.INFO)
 
-DATA_PATH = os.path.join(bp.data_dir, "day05.txt")
-TEST_PATH = os.path.join(bp.test_dir, "day05.txt")
+DATA_PATH = bp.get_data_path()
+TEST_PATH = bp.get_test_path()
 
 
 def load_data(path):

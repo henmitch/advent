@@ -1,5 +1,4 @@
 """https://adventofcode.com/2021/day/15"""
-import os
 from typing import Tuple
 
 import boilerplate as bp
@@ -7,8 +6,8 @@ import boilerplate as bp
 Grid = Tuple[Tuple[int, ...], ...]
 Point = Tuple[int, int]
 
-DATA_PATH = os.path.join(bp.data_dir, "day15.txt")
-TEST_PATH = os.path.join(bp.test_dir, "day15.txt")
+DATA_PATH = bp.get_data_path()
+TEST_PATH = bp.get_test_path()
 
 
 def load_data(path) -> Grid:
