@@ -1,13 +1,12 @@
 """https://adventofcode.com/2021/day/16"""
 from __future__ import annotations
 
-import os
 from typing import List
 
 import boilerplate as bp
 
-DATA_PATH = os.path.join(bp.data_dir, "day16.txt")
-TEST_PATH = os.path.join(bp.test_dir, "day16.txt")
+DATA_PATH = bp.get_data_path()
+TEST_PATH = bp.get_test_path()
 
 
 def load_data(path):

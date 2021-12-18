@@ -1,16 +1,15 @@
 """https://adventofcode.com/2021/day/17"""
 import math
-import os
 import re
-from typing import List, Set, Tuple
+from typing import List, Tuple
 
 import boilerplate as bp
 
 Point = Velocity = Tuple[int, int]
 Area = Trajectory = List[Point]
 
-DATA_PATH = os.path.join(bp.data_dir, "day17.txt")
-TEST_PATH = os.path.join(bp.test_dir, "day17.txt")
+DATA_PATH = bp.get_data_path()
+TEST_PATH = bp.get_test_path()
 
 
 def load_data(path) -> Area:

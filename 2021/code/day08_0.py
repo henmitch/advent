@@ -1,12 +1,11 @@
 """https://adventofcode.com/2021/day/8"""
 import itertools
-import os
 from typing import List
 
 import boilerplate as bp
 
-DATA_PATH = os.path.join(bp.data_dir, "day08.txt")
-TEST_PATH = os.path.join(bp.test_dir, "day08.txt")
+DATA_PATH = bp.get_data_path()
+TEST_PATH = bp.get_test_path()
 
 def load_data(path):
     with open(path) as f:

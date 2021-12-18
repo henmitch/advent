@@ -1,7 +1,6 @@
 """https://adventofcode.com/2021/day/9"""
 import itertools
 import logging
-import os
 from typing import List
 
 import boilerplate as bp
@@ -9,8 +8,8 @@ import day09_0 as old
 
 logging.basicConfig(level=logging.INFO)
 
-DATA_PATH = os.path.join(bp.data_dir, "day09.txt")
-TEST_PATH = os.path.join(bp.test_dir, "day09.txt")
+DATA_PATH = bp.get_data_path()
+TEST_PATH = bp.get_test_path()
 
 
 def make_mask(data: List[List[int]]) -> List[List[int]]:
