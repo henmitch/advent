@@ -1,7 +1,8 @@
 """https://adventofcode.com/2021/day/18"""
+import ast
 import itertools
 from typing import List
-import ast
+
 from day18_0 import DATA_PATH, TEST_PATH, SnailfishNumber
 
 

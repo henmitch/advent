@@ -1,10 +1,10 @@
 """https://adventofcode.com/2021/day/18"""
 from __future__ import annotations
-import unittest
 
 import ast
 import functools
 import math
+import unittest
 from typing import List, Tuple
 
 import boilerplate as bp
