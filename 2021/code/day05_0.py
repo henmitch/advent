@@ -1,5 +1,4 @@
 """https://adventofcode.com/2021/day/5"""
-# This is very slow. The next one is much faster.
 import logging
 import time
 from typing import List
@@ -55,10 +54,15 @@ def make_line(row):
 def make_lines(data: List[List[int]]):
     """Make a list of lines from the data"""
     logging.info("Making lines")
-    out = []
+    lines = set()
+    seen = set()
+    out = 0
     for row in data:
-        out += make_line(row)
-
+        row_line = make_line(row)
+        row_seen = set(row_line) & lines - seen
+        out += len(row_seen)
+        lines |= set(row_line)
+        seen |= row_seen
     return out
 
 
@@ -83,14 +87,12 @@ def main():
     logging.info(time.time())
     logging.info("Starting")
     test = filter_(load_data(TEST_PATH))
-    test_lines = make_lines(test)
-    test_overlap = count_overlap(test_lines)
+    test_overlap = make_lines(test)
     assert test_overlap == 5
     logging.info("Test passed")
 
     data = filter_(load_data(DATA_PATH))
-    lines = make_lines(data)
-    print(count_overlap(lines))
+    print(make_lines(data))
 
 
 if __name__ == "__main__":

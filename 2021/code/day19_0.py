@@ -93,7 +93,8 @@ def find_mapping(points: List[List[Point]]) -> callable:
 
     # It'll be some combination of translation, rotation, and reflection.
 
-    # These are our options
+    # These are our options (not actual flips and rotations, just operations on
+    # the indices)
     def flip_x(p: Point) -> Point:
         return (-p[0], p[1], p[2])
 
