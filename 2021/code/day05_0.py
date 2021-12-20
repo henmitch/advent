@@ -43,26 +43,25 @@ def make_line(row):
         # Vertical line
         if y1 > y2:
             y1, y2 = y2, y1
-        return [(x1, y) for y in range(y1, y2 + 1)]
+        return {(x1, y) for y in range(y1, y2 + 1)}
     if y1 == y2:
         # Horizontal line
         if x1 > x2:
             x1, x2 = x2, x1
-        return [(x, y1) for x in range(x1, x2 + 1)]
+        return {(x, y1) for x in range(x1, x2 + 1)}
 
 
-def make_lines(data: List[List[int]]):
+def make_lines(data: int):
     """Make a list of lines from the data"""
-    logging.info("Making lines")
     lines = set()
     seen = set()
-    out = 0
     for row in data:
         row_line = make_line(row)
-        row_seen = set(row_line) & lines - seen
-        out += len(row_seen)
-        lines |= set(row_line)
+        row_seen = row_line & lines
+        lines |= row_line
         seen |= row_seen
+    out = len(seen)
+
     return out
 
 
