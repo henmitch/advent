@@ -3,7 +3,7 @@ import logging
 
 import boilerplate as bp
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARN)
 
 DATA_PATH = bp.get_data_path()
 TEST_PATH = bp.get_test_path()

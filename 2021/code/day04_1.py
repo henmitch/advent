@@ -5,7 +5,7 @@ from typing import List
 import boilerplate as bp
 import day04_0 as old
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.WARN)
 
 TEST_PATH = bp.get_test_path()
 
