@@ -58,12 +58,12 @@ class SnailfishNumber():
 
     def is_left(self) -> bool:
         if self.parent is None:
-            return True
+            return None
         return self.parent.left is self
 
     def is_right(self) -> bool:
         if self.parent is None:
-            return True
+            return None
         return self.parent.right is self
 
     def is_rightmost(self) -> bool:
@@ -100,6 +100,7 @@ class SnailfishNumber():
         if self.is_left():
             return self.parent.first_left()
         # If we're on the right, then we want the bottom right of our sibling
+        # (who will be on the left)
         if self.is_right():
             if isinstance(self.parent.left, int):
                 return self.parent, 0
@@ -115,6 +116,7 @@ class SnailfishNumber():
         if self.is_right():
             return self.parent.first_right()
         # If we're on the left, then we want the bottom left of our sibling
+        # (who will be on the right)
         if self.is_left():
             if isinstance(self.parent.right, int):
                 return self.parent, 1
@@ -150,7 +152,9 @@ class SnailfishNumber():
     def traverse(self) -> None:
         if any(child.parent is not self for child in self.children
                if isinstance(child, SnailfishNumber)):
-            raise ValueError("AHA!")
+            # We've found a child who's somehow adopted. Great in the real
+            # world, very bad here.
+            raise ValueError("Found adopted child")
         yield self
         if isinstance(self.left, SnailfishNumber):
             yield from self.left.traverse()
@@ -161,28 +165,39 @@ class SnailfishNumber():
         if isinstance(self.left, int) and self.left >= 10:
             self.replace(0, _split(self.left, self))
             return True
+
+        if isinstance(self.left, SnailfishNumber):
+            if self.left.split():
+                return True
+
         if isinstance(self.right, int) and self.right >= 10:
             self.replace(1, _split(self.right, self))
             return True
+
         return False
 
     def reduce(self) -> SnailfishNumber:
         # Only go until we've changed one thing, then restart
-        changed = False
-        for snail in self.traverse():
-            if snail.depth() >= 4:
-                snail.explode()
-                changed = True
-                break
-        if not changed:
+        while True:
+            changed = False
+            for snail in self.traverse():
+                if snail.depth() >= 4:
+                    snail.explode()
+                    changed = True
+                    break
+
+            if changed:
+                continue
+
             for snail in self.traverse():
                 if snail.split():
                     changed = True
                     break
 
-        if changed:
-            self.reduce()
-        return self
+            if changed:
+                continue
+
+            return self
 
     def magnitude(self) -> int:
         # 3 times the magnitude of the left...
@@ -271,21 +286,148 @@ class TestSnailfishNumber(unittest.TestCase):
         self.assertEqual(added, expect)
 
     def test_addition_example_5(self):
-        to_add = [
+        with self.subTest("Whole thing"):
+            to_add = [
+                SnailfishNumber(x)
+                for x in [[[[0, [4, 5]], [0, 0]], [[[4, 5], [2, 6]], [9, 5]]],
+                          [7, [[[3, 7], [4, 3]], [[6, 3], [8, 8]]]],
+                          [[2, [[0, 8], [3, 4]]], [[[6, 7], 1], [7, [1, 6]]]],
+                          [[[[2, 4], 7], [6, [0, 5]]],
+                           [[[6, 8], [2, 8]], [[2, 1], [4, 5]]]],
+                          [7, [5, [[3, 8], [1, 4]]]], [[2, [2, 2]], [
+                              8, [8, 1]
+                          ]], [2, 9], [1, [[[9, 3], 9], [[9, 0], [0, 7]]]],
+                          [[[5, [7, 4]], 7], 1], [[[[4, 2], 2], 6], [8, 7]]]
+            ]
+            added = functools.reduce(lambda x, y: x + y, to_add)
+            expect = SnailfishNumber([[[[8, 7], [7, 7]], [[8, 6], [7, 7]]],
+                                      [[[0, 7], [6, 6]], [8, 7]]])
+            self.assertEqual(added, expect)
+
+        with self.subTest("Addition step 1"):
+            left = SnailfishNumber([[[0, [4, 5]], [0, 0]],
+                                    [[[4, 5], [2, 6]], [9, 5]]])
+            right = SnailfishNumber([7, [[[3, 7], [4, 3]], [[6, 3], [8, 8]]]])
+            expect = SnailfishNumber([[[[4, 0], [5, 4]], [[7, 7], [6, 0]]],
+                                      [[8, [7, 7]], [[7, 9], [5, 0]]]])
+            self.assertEqual(left + right, expect)
+
+        with self.subTest("Addition step 2"):
+            left = SnailfishNumber([[[[4, 0], [5, 4]], [[7, 7], [6, 0]]],
+                                    [[8, [7, 7]], [[7, 9], [5, 0]]]])
+            right = SnailfishNumber([[2, [[0, 8], [3, 4]]],
+                                     [[[6, 7], 1], [7, [1, 6]]]])
+            expect = SnailfishNumber([[[[6, 7], [6, 7]], [[7, 7], [0, 7]]],
+                                      [[[8, 7], [7, 7]], [[8, 8], [8, 0]]]])
+            self.assertEqual(left + right, expect)
+
+        with self.subTest("Addition step 3"):
+            left = SnailfishNumber([[[[6, 7], [6, 7]], [[7, 7], [0, 7]]],
+                                    [[[8, 7], [7, 7]], [[8, 8], [8, 0]]]])
+            right = SnailfishNumber([[[[2, 4], 7], [6, [0, 5]]],
+                                     [[[6, 8], [2, 8]], [[2, 1], [4, 5]]]])
+            expect = SnailfishNumber([[[[7, 0], [7, 7]], [[7, 7], [7, 8]]],
+                                      [[[7, 7], [8, 8]], [[7, 7], [8, 7]]]])
+            self.assertEqual(left + right, expect)
+
+        with self.subTest("Addition step 4"):
+            left = SnailfishNumber([[[[7, 0], [7, 7]], [[7, 7], [7, 8]]],
+                                    [[[7, 7], [8, 8]], [[7, 7], [8, 7]]]])
+            right = SnailfishNumber([7, [5, [[3, 8], [1, 4]]]])
+            expect = SnailfishNumber([[[[7, 7], [7, 8]], [[9, 5], [8, 7]]],
+                                      [[[6, 8], [0, 8]], [[9, 9], [9, 0]]]])
+            self.assertEqual(left + right, expect)
+
+        with self.subTest("Addition step 5"):
+            left = SnailfishNumber([[[[7, 7], [7, 8]], [[9, 5], [8, 7]]],
+                                    [[[6, 8], [0, 8]], [[9, 9], [9, 0]]]])
+            right = SnailfishNumber([[2, [2, 2]], [8, [8, 1]]])
+            expect = SnailfishNumber([[[[6, 6], [6, 6]], [[6, 0], [6, 7]]],
+                                      [[[7, 7], [8, 9]], [8, [8, 1]]]])
+            self.assertEqual(left + right, expect)
+
+        with self.subTest("Addition step 6"):
+            left = SnailfishNumber([[[[6, 6], [6, 6]], [[6, 0], [6, 7]]],
+                                    [[[7, 7], [8, 9]], [8, [8, 1]]]])
+            right = SnailfishNumber([2, 9])
+            expect = SnailfishNumber([[[[6, 6], [7, 7]], [[0, 7], [7, 7]]],
+                                      [[[5, 5], [5, 6]], 9]])
+            self.assertEqual(left + right, expect)
+
+        with self.subTest("Addition step 7"):
+            left = SnailfishNumber([[[[6, 6], [7, 7]], [[0, 7], [7, 7]]],
+                                    [[[5, 5], [5, 6]], 9]])
+            right = SnailfishNumber([1, [[[9, 3], 9], [[9, 0], [0, 7]]]])
+            expect = SnailfishNumber([[[[7, 8], [6, 7]], [[6, 8], [0, 8]]],
+                                      [[[7, 7], [5, 0]], [[5, 5], [5, 6]]]])
+            self.assertEqual(left + right, expect)
+
+        with self.subTest("Addition step 8"):
+            left = SnailfishNumber([[[[7, 8], [6, 7]], [[6, 8], [0, 8]]],
+                                    [[[7, 7], [5, 0]], [[5, 5], [5, 6]]]])
+            right = SnailfishNumber([[[5, [7, 4]], 7], 1])
+            expect = SnailfishNumber([[[[7, 7], [7, 7]], [[8, 7], [8, 7]]],
+                                      [[[7, 0], [7, 7]], 9]])
+            self.assertEqual(left + right, expect)
+
+        with self.subTest("Addition step 9"):
+            left = SnailfishNumber([[[[7, 7], [7, 7]], [[8, 7], [8, 7]]],
+                                    [[[7, 0], [7, 7]], 9]])
+            right = SnailfishNumber([[[[4, 2], 2], 6], [8, 7]])
+            expect = SnailfishNumber([[[[8, 7], [7, 7]], [[8, 6], [7, 7]]],
+                                      [[[0, 7], [6, 6]], [8, 7]]])
+            self.assertEqual(left + right, expect)
+
+    def test_magnitude_example_1(self):
+        mag = SnailfishNumber([[1, 2], [[3, 4], 5]]).magnitude()
+        expect = 143
+        self.assertEqual(mag, expect)
+
+    def test_magnitude_example_2(self):
+        mag = SnailfishNumber([[[[0, 7], 4], [[7, 8], [6, 0]]],
+                               [8, 1]]).magnitude()
+        expect = 1384
+        self.assertEqual(mag, expect)
+
+    def test_magnitude_example_3(self):
+        mag = SnailfishNumber([[[[1, 1], [2, 2]], [3, 3]], [4, 4]]).magnitude()
+        expect = 445
+        self.assertEqual(mag, expect)
+
+    def test_magnitude_example_4(self):
+        mag = SnailfishNumber([[[[3, 0], [5, 3]], [4, 4]], [5, 5]]).magnitude()
+        expect = 791
+        self.assertEqual(mag, expect)
+
+    def test_magnitude_example_5(self):
+        mag = SnailfishNumber([[[[5, 0], [7, 4]], [5, 5]], [6, 6]]).magnitude()
+        expect = 1137
+        self.assertEqual(mag, expect)
+
+    def test_magnitude_example_6(self):
+        mag = SnailfishNumber([[[[8, 7], [7, 7]], [[8, 6], [7, 7]]],
+                               [[[0, 7], [6, 6]], [8, 7]]]).magnitude()
+        expect = 3488
+        self.assertEqual(mag, expect)
+
+    def test_whole_kit_and_caboodle(self):
+        num = [
             SnailfishNumber(x)
-            for x in [[[[0, [4, 5]], [0, 0]], [[[4, 5], [2, 6]], [9, 5]]],
-                      [7, [[[3, 7], [4, 3]], [[6, 3], [8, 8]]]],
-                      [[2, [[0, 8], [3, 4]]], [[[6, 7], 1], [7, [1, 6]]]],
-                      [[[[2, 4], 7], [6, [0, 5]]],
-                       [[[6, 8], [2, 8]], [[2, 1], [4, 5]]]],
-                      [7, [5, [[3, 8], [1, 4]]]], [[2, [2, 2]], [8, [8, 1]]],
-                      [2, 9], [1, [[[9, 3], 9], [[9, 0], [0, 7]]]],
-                      [[[5, [7, 4]], 7], 1], [[[[4, 2], 2], 6], [8, 7]]]
+            for x in [[[[0, [5, 8]], [[1, 7], [9, 6]]],
+                       [[4, [1, 2]], [[1, 4], 2]]],
+                      [[[5, [2, 8]], 4], [5, [[9, 9], 0]]],
+                      [6, [[[6, 2], [5, 6]], [[7, 6], [4, 7]]]],
+                      [[[6, [0, 7]], [0, 9]], [4, [9, [9, 0]]]],
+                      [[[7, [6, 4]], [3, [1, 3]]], [[[5, 5], 1], 9]],
+                      [[6, [[7, 3], [3, 2]]], [[[3, 8], [5, 7]], 4]],
+                      [[[[5, 4], [7, 7]], 8], [[8, 3], 8]],
+                      [[9, 3], [[9, 9], [6, [4, 9]]]],
+                      [[2, [[7, 7], 7]], [[5, 8], [[9, 3], [0, 2]]]],
+                      [[[[5, 2], 5], [8, [3, 7]]], [[5, [7, 5]], [4, 4]]]]
         ]
-        added = functools.reduce(lambda x, y: x + y, to_add)
-        expect = SnailfishNumber([[[[8, 7], [7, 7]], [[8, 6], [7, 7]]],
-                                  [[[0, 7], [6, 6]], [8, 7]]])
-        self.assertEqual(added, expect)
+        summed = process(num).magnitude()
+        expect = 4140
+        self.assertEqual(summed, expect)
 
 
 def test():
@@ -299,4 +441,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    test()
