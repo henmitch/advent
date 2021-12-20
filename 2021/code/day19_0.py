@@ -1,4 +1,5 @@
 """https://adventofcode.com/2021/day/19"""
+import functools
 import itertools
 from typing import List, Set, Tuple
 
@@ -8,24 +9,24 @@ Vector = Tuple[int, ...]
 Matrix = Tuple[Vector]
 Point = Tuple[int, int, int]
 Pair = Tuple[int, int]
-Scanner = List[Point]
+Scanner = Tuple[Point]
 
 TEST_PATH = bp.get_test_path()
 DATA_PATH = bp.get_data_path()
 
 
-def load_data(path: str) -> List[Scanner]:
+def load_data(path: str) -> Tuple[Scanner]:
     with open(path, "r") as f:
         raw = f.read().split("\n\n")
     out = []
     for raw_scanner in raw:
         raw_scanner = raw_scanner.splitlines()
         raw_scanner.pop(0)
-        scanner = [
+        scanner = tuple(
             tuple(int(x) for x in line.split(",")) for line in raw_scanner
-        ]
+        )
         out.append(scanner)
-    return out
+    return tuple(out)
 
 
 # Distances between points will be invariant under rotation. So, we find the
@@ -36,11 +37,12 @@ def load_data(path: str) -> List[Scanner]:
 # tranform to all the points in B, and then compare all that to C.
 
 
+@functools.cache
 def get_distance(p1: Point, p2: Point) -> int:
     return sum(abs(a - b) for a, b in zip(p1, p2))
-    # return math.sqrt(sum((a - b)**2 for a, b in zip(p1, p2)))
 
 
+@functools.cache
 def get_distances(data: Scanner) -> Matrix:
     return tuple(set(get_distance(p1, p2) for p2 in data) for p1 in data)
 
@@ -160,11 +162,11 @@ def merge(left: Scanner, right: Scanner) -> List[Point]:
     if not idxes:
         return left
     mapping = find_mapping(idxes)
-    return list(set(left) | set(mapping(p) for p in right))
+    return tuple(set(left) | set(mapping(p) for p in right))
 
 
 def merge_all(data: List[Scanner]) -> Set[Point]:
-    data = data.copy()
+    data = list(data)
     out = data[0]
     while data:
         scanner = data.pop(0)

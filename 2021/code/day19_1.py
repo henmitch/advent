@@ -1,5 +1,5 @@
 """https://adventofcode.com/2021/day/19"""
-from typing import List
+from typing import List, Tuple
 
 import day19_0 as old
 
@@ -17,9 +17,9 @@ def largest_distance(locations: List[old.Point]) -> int:
     return max(max(row) for row in distances)
 
 
-def find_locations(scanners: List[old.Scanner]) -> List[old.Point]:
-    merged = list(old.merge_all(scanners))
-    locations = [scanner_location(merged, s) for s in scanners]
+def find_locations(scanners: List[old.Scanner]) -> Tuple[old.Point]:
+    merged = tuple(old.merge_all(scanners))
+    locations = tuple(scanner_location(merged, s) for s in scanners)
     return locations
 
 

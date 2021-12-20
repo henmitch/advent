@@ -74,9 +74,6 @@ def pretty_print(points: Set[Tuple[int]]):
 
 def test():
     points, folds = load_data(TEST_PATH)
-    print(pretty_print(points))
-    print(pretty_print(fold(points, [folds[0]])))
-    print(pretty_print(fold(points, folds)))
     assert count_dots_after_fold(points, [folds[0]]) == 17
 
 

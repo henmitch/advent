@@ -29,7 +29,7 @@ def get_score(row: List[str]) -> Tuple[int, bool]:
     """Returns the score and whether the line is valid"""
     stack = []
     for char in row:
-        print("".join(stack), char)
+        # print("".join(stack), char)
         if char in OPENERS:
             stack.append(char)
         elif char in CLOSERS:
