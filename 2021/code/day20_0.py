@@ -41,12 +41,12 @@ def pixel_to_int(img: Image, x: int, y: int) -> int:
 
 
 def enhance(img: Image, alg: str, padder: str = ".") -> Image:
-    img = pad(img, padder=padder)
+    img = pad(img, padder=padder, n=2)
     out = []
     for y, row in enumerate(img[1:-1]):
         row_out = ""
         for x, _ in enumerate(row[1:-1]):
-            row_out += alg[pixel_to_int(img, x, y)]
+            row_out += alg[pixel_to_int(img, x + 1, y + 1)]
         out.append(list(row_out))
     return out
 
@@ -59,7 +59,6 @@ def process(img: Image, alg: str) -> int:
     img = enhance(img, alg)
     filler = alg[0]
     img = enhance(img, alg, filler)
-    pretty_print(img)
     return n_illuminated(img)
 
 
@@ -79,5 +78,4 @@ def main():
 
 if __name__ == "__main__":
     test()
-    print()
     main()
