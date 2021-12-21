@@ -3,22 +3,20 @@ import ast
 import itertools
 from typing import List
 
-from day18_0 import DATA_PATH, TEST_PATH, SnailfishNumber
+from day18_0 import DATA_PATH, SnailfishNumber
 
 
-def load_data(path) -> List:
+def load_data(path) -> List[SnailfishNumber]:
     with open(path, "r") as f:
         data = f.read().splitlines()
-    return [ast.literal_eval(line) for line in data]
+    return tuple(ast.literal_eval(line) for line in data)
 
 
-def max_sum(data: List) -> int:
-    out = 0
-    for first, second in itertools.combinations(data, 2):
-        first = SnailfishNumber(first)
-        second = SnailfishNumber(second)
-        out = max(out, (first + second).magnitude())
-    return out
+def max_sum(data: List[SnailfishNumber]) -> int:
+    return max(
+        SnailfishNumber(pair).reduce().magnitude()
+        for pair in itertools.permutations(data, 2))
+
 
 if __name__ == "__main__":
     data = load_data(DATA_PATH)
