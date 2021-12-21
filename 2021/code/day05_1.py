@@ -4,7 +4,6 @@ from typing import List, Set, Tuple
 
 import boilerplate as bp
 
-
 DATA_PATH = bp.get_data_path()
 TEST_PATH = bp.get_test_path()
 

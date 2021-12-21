@@ -5,7 +5,7 @@ import ast
 import functools
 import math
 import unittest
-from typing import List, Tuple
+from typing import Iterator, List, Tuple
 
 import boilerplate as bp
 
@@ -17,28 +17,28 @@ class SnailfishNumber():
     """A snailfish number is a pair whose elements can be regular numbers or
     snailfish numbers.
     """
+    __slots__ = ("left", "right", "parent", "children")
+
     def __init__(self, data: List, parent: SnailfishNumber = None) -> None:
         self.parent = parent
 
-        if isinstance(data[0], list):
+        if isinstance(data[0], int):
+            self.left = data[0]
+        elif isinstance(data[0], list) or isinstance(data[0], tuple):
             self.left = SnailfishNumber(data[0], self)
-        elif isinstance(data[0], SnailfishNumber):
+        else:
             self.left = data[0]
             self.left.parent = self
-        else:
-            self.left = data[0]
 
-        if isinstance(data[1], list):
+        if isinstance(data[1], int):
+            self.right = data[1]
+        elif isinstance(data[1], list) or isinstance(data[1], tuple):
             self.right = SnailfishNumber(data[1], self)
-        elif isinstance(data[1], SnailfishNumber):
+        else:
             self.right = data[1]
             self.right.parent = self
-        else:
-            self.right = data[1]
 
         self.children = [self.left, self.right]
-        if isinstance(self.left, SnailfishNumber) and self.left is self.right:
-            raise ValueError("Left and right are the same, somehow")
 
     def __str__(self) -> str:
         return "[" + str(self.left) + ", " + str(self.right) + "]"
@@ -49,7 +49,16 @@ class SnailfishNumber():
     def __eq__(self, other) -> bool:
         if not isinstance(other, SnailfishNumber):
             return False
-        return self.left == other.left and self.right == other.right
+        return self.__hash__() == other.__hash__()
+
+    def __hash__(self) -> int:
+        return hash(str(self))
+
+    def as_list(self) -> List:
+        return ast.literal_eval(str(self))
+
+    def copy(self) -> SnailfishNumber:
+        return SnailfishNumber(self.as_list())
 
     def depth(self) -> int:
         if self.parent is None:
@@ -69,16 +78,12 @@ class SnailfishNumber():
     def is_rightmost(self) -> bool:
         if self.parent is None:
             return True
-        if self.is_left():
-            return False
-        return self.parent.is_rightmost()
+        return (not self.is_left()) and self.parent.is_rightmost()
 
     def is_leftmost(self) -> bool:
         if self.parent is None:
             return True
-        if self.is_right():
-            return False
-        return self.parent.is_leftmost()
+        return (not self.is_right()) and self.parent.is_leftmost()
 
     def bottom_left(self) -> SnailfishNumber:
         if isinstance(self.left, int):
@@ -101,10 +106,9 @@ class SnailfishNumber():
             return self.parent.first_left()
         # If we're on the right, then we want the bottom right of our sibling
         # (who will be on the left)
-        if self.is_right():
-            if isinstance(self.parent.left, int):
-                return self.parent, 0
-            return self.parent.left.bottom_right(), 1
+        if isinstance(self.parent.left, int):
+            return self.parent, 0
+        return self.parent.left.bottom_right(), 1
 
     def first_right(self) -> Tuple[SnailfishNumber | None, int]:
         """We want the leftmost element of anything to the right"""
@@ -117,13 +121,12 @@ class SnailfishNumber():
             return self.parent.first_right()
         # If we're on the left, then we want the bottom left of our sibling
         # (who will be on the right)
-        if self.is_left():
-            if isinstance(self.parent.right, int):
-                return self.parent, 1
-            return self.parent.right.bottom_left(), 0
+        if isinstance(self.parent.right, int):
+            return self.parent, 1
+        return self.parent.right.bottom_left(), 0
 
     def replace(self, idx: int, to: SnailfishNumber | int) -> None:
-        if isinstance(to, SnailfishNumber):
+        if not isinstance(to, int):
             to.parent = self
         if idx == 0:
             self.left = to
@@ -149,24 +152,19 @@ class SnailfishNumber():
         else:
             self.parent.replace(1, 0)
 
-    def traverse(self) -> None:
-        if any(child.parent is not self for child in self.children
-               if isinstance(child, SnailfishNumber)):
-            # We've found a child who's somehow adopted. Great in the real
-            # world, very bad here.
-            raise ValueError("Found adopted child")
+    def traverse(self) -> Iterator[SnailfishNumber]:
         yield self
-        if isinstance(self.left, SnailfishNumber):
+        if not isinstance(self.left, int):
             yield from self.left.traverse()
-        if isinstance(self.right, SnailfishNumber):
+        if not isinstance(self.right, int):
             yield from self.right.traverse()
 
     def split(self) -> bool:
-        if isinstance(self.left, int) and self.left >= 10:
-            self.replace(0, _split(self.left, self))
-            return True
-
-        if isinstance(self.left, SnailfishNumber):
+        if isinstance(self.left, int):
+            if self.left >= 10:
+                self.replace(0, _split(self.left, self))
+                return True
+        else:
             if self.left.split():
                 return True
 
@@ -224,10 +222,10 @@ def _split(num: int, parent: SnailfishNumber | None = None) -> SnailfishNumber:
     return SnailfishNumber([left, right], parent)
 
 
-def load_data(path) -> List:
+def load_data(path) -> List[SnailfishNumber]:
     with open(path, "r") as f:
         data = f.read().splitlines()
-    return [SnailfishNumber(ast.literal_eval(line)) for line in data]
+    return tuple(SnailfishNumber(ast.literal_eval(line)) for line in data)
 
 
 def process(data: List[SnailfishNumber]) -> SnailfishNumber:

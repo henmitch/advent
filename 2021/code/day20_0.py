@@ -1,5 +1,6 @@
 """https://adventofcode.com/2021/day/20"""
 from typing import List, Tuple
+
 import boilerplate as bp
 
 Image = List[List[str]]

@@ -1,5 +1,6 @@
 """https://adventofcode.com/2021/day/20"""
 from itertools import cycle
+
 import day20_0 as old
 
 
