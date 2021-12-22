@@ -5,7 +5,7 @@ from typing import Dict, Tuple
 from day21_0 import load_data, TEST_PATH, DATA_PATH
 
 State = Tuple[Tuple[int, int], Tuple[int, int], int]
-Cache = Dict[State, Tuple[int, int]]
+Cache = Dict[State, complex]
 
 # Some of the games will end up in positions that we've seen before. We can
 # cache those positions' results to save time. After all, there are only
@@ -20,16 +20,6 @@ Cache = Dict[State, Tuple[int, int]]
 #     {((loc1, score1), (loc2, score2), next_player): (wins1, wins2)}
 # Then, go to 19, do the same. Then, go to 18, etc. Once we get to 17, we'll
 # start to be able to actually use the cache.
-
-
-def add(t1: Tuple[int, int], t2: Tuple[int, int]) -> Tuple[int, int]:
-    """Just a convenience function to add two tuples piecewise."""
-    return t1[0] + t2[0], t1[1] + t2[1]
-
-
-def mult(x: int, t: Tuple[int, int]) -> Tuple[int, int]:
-    """Multiply a tuple by an integer."""
-    return x*t[0], x*t[1]
 
 
 def update_player(position: int, score: int, step: int) -> Tuple[int, int]:
@@ -59,7 +49,7 @@ def update(cache: Cache, state: State, depth: int = 0) -> dict:
         8: 3,  # 233, 323, 332
         9: 1,  # 333
     }
-    wins = (0, 0)
+    wins = 0 + 0j
     for step, num in ways.items():
         next_ = state[-1]
         # Lists are mutable, tuples aren't.
@@ -71,7 +61,10 @@ def update(cache: Cache, state: State, depth: int = 0) -> dict:
             # If it does, we add that to the win tally
             tmp = [0, 0]
             tmp[next_] = ways[step]
-            wins = add(wins, tuple(tmp))
+            if next_ == 0:
+                wins += ways[step]
+            else:
+                wins += ways[step]*(0 + 1j)
             continue
         # Now we check the cache to see if the next step is already there.
         # Everything SHOULD be in there.
@@ -80,8 +73,8 @@ def update(cache: Cache, state: State, depth: int = 0) -> dict:
         key = tuple(key)
         if key not in cache:
             cache = update(cache, key, depth=depth + 1)
-        wins = add(wins, mult(num, cache[key]))
-    cache[state] = add(cache.get(state, (0, 0)), wins)
+        wins = wins + num*cache[key]
+    cache[state] = cache.get(state, 0 + 0j) + wins
     return cache
 
 
@@ -96,12 +89,17 @@ def n_wins(starts: Tuple[int, int]) -> Tuple[int, int]:
     return cache[((starts[0], 0), (starts[1], 0), 0)]
 
 
+def most_wins(data: Tuple[int, int]) -> int:
+    n = n_wins(data)
+    return int(max(n.real, n.imag))
+
+
 def test():
     data = load_data(TEST_PATH)
-    assert max(n_wins(data)) == 444356092776315
+    assert most_wins(data) == 444356092776315
 
 
 if __name__ == "__main__":
     test()
     data = load_data(DATA_PATH)
-    print(max(n_wins(data)))
+    print(most_wins(data))
