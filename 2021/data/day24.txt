@@ -1,0 +1,268 @@
+# 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01
+inp w
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 13  # x = 13
+eql x w   # x = 0
+eql x 0   # x = 1
+mul y 0
+add y 25
+mul y x
+add y 1   # y = 26
+mul z y   # z = 0
+mul y 0
+add y w
+add y 3
+mul y x   # y = w1 + 3
+add z y   # z = w1 + 3
+# 02 02 02 02 02 02 02 02 02 02 02 02 02 02 02
+inp w
+mul x 0
+add x z
+mod x 26  # x = w1 + 3
+div z 1   # z = w1 + 3
+add x 11  # x = w1 + 14
+eql x w   # x = 0
+eql x 0   # x = 1
+mul y 0
+add y 25
+mul y x
+add y 1   # y = 26
+mul z y   # z = 26(w1 + 3)
+mul y 0
+add y w
+add y 12
+mul y x   # y = w2 + 12
+add z y   # z = 26(w1 + 3) + w2 + 12
+# 03 03 03 03 03 03 03 03 03 03 03 03 03 03 03
+inp w
+mul x 0
+add x z
+mod x 26  # x = w2 + 12
+div z 1   # z = 26(w1 + 3) + w2 + 12
+add x 15  # x = w2 + 27
+eql x w   # x = 0
+eql x 0   # x = 1
+mul y 0
+add y 25
+mul y x
+add y 1   # y = 26
+mul z y   # z = 26(26(w1 + 3) + w2 + 12)
+mul y 0
+add y w
+add y 9
+mul y x   # y = w3 + 9
+add z y   # z = 26(26(w1 + 3) + w2 + 12) + w3 + 9
+# 04 04 04 04 04 04 04 04 04 04 04 04 04 04 04
+inp w
+mul x 0
+add x z
+mod x 26  # x = w3 + 9
+div z 26  # z = 26(w1 + 3) + w2 + 12
+add x -6  # x = w3 + 3
+eql x w   # Possible!  w4 = w3 + 3
+eql x 0   # x = 0
+mul y 0
+add y 25
+mul y x
+add y 1   # y = 1
+mul z y   # z = 26(w1 + 3) + w2 + 12
+mul y 0
+add y w
+add y 12
+mul y x
+add z y   # z = 26(w1 + 3) + w2 + 12
+# 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05
+inp w
+mul x 0
+add x z
+mod x 26  # x = w2 + 12
+div z 1   # z = 26(w1 + 3) + w2 + 12
+add x 15  # x = w2 + 27
+eql x w
+eql x 0   # x = 1
+mul y 0
+add y 25
+mul y x
+add y 1   # y = 26
+mul z y   # z = 26(26(w1 + 3) + w2 + 12)
+mul y 0
+add y w
+add y 2
+mul y x   # y = w + 2
+add z y   # z = 26(26(w1 + 3) + w2 + 12) + w5 + 2
+# 06 06 06 06 06 06 06 06 06 06 06 06 06 06 06
+inp w
+mul x 0
+add x z
+mod x 26  # x = w5 + 2
+div z 26  # z = 26(w1 + 3) + w2 + 12
+add x -8  # x = w5 - 6
+eql x w   # Possible!  w6 = w5 - 6
+eql x 0   # x = 0
+mul y 0
+add y 25
+mul y x
+add y 1   # y = 1
+mul z y
+mul y 0
+add y w
+add y 1
+mul y x
+add z y   # z = 26(w1 + 3) + w2 + 12
+# 07 07 07 07 07 07 07 07 07 07 07 07 07 07 07
+inp w
+mul x 0
+add x z
+mod x 26  # x = w2 + 12
+div z 26  # z = w1 + 3
+add x -4  # x = w2 + 8
+eql x w   # Possible! w7 = w2 + 8
+eql x 0   # x = 0
+mul y 0
+add y 25
+mul y x
+add y 1   # y = 1
+mul z y   # z = w1 + 3
+mul y 0
+add y w
+add y 1
+mul y x
+add z y   # z = w1 + 3
+# 08 08 08 08 08 08 08 08 08 08 08 08 08 08 08
+inp w
+mul x 0
+add x z
+mod x 26  # x = w1 + 3
+div z 1   # z = w1 + 3
+add x 15  # x = w1 + 18
+eql x w
+eql x 0   # x = 21
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y   # z = 26(w1 + 3)
+mul y 0
+add y w
+add y 13
+mul y x
+add z y   # z = 26(w1 + 3) + w8 + 13
+# 09 09 09 09 09 09 09 09 09 09 09 09 09 09 09
+inp w
+mul x 0
+add x z
+mod x 26  # x = w8 + 13
+div z 1   # z = 26(w1 + 3) + w8 + 13
+add x 10  # x = w8 + 23
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1   # y = 26
+mul z y   # z = 26(26(w1 + 3) + w8 + 13)
+mul y 0
+add y w
+add y 1
+mul y x
+add z y   # z = 26(26(w1 + 3) + w8 + 13) + w9 + 1
+# 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10
+inp w
+mul x 0
+add x z
+mod x 26  # x = w9 + 1
+div z 1   # z = 26(26(w1 + 3) + w8 + 13) + w9 + 1
+add x 11  # x = w9 + 12
+eql x w
+eql x 0   # x = 1
+mul y 0
+add y 25
+mul y x
+add y 1   # y = 26
+mul z y   # z = 26(26(26(w1 + 3) + w8 + 13) + w9 + 1)
+mul y 0
+add y w
+add y 6
+mul y x
+add z y   # z = 26(26(26(w1 + 3) + w8 + 13) + w9 + 1) + w10 + 6
+# 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11
+inp w
+mul x 0
+add x z
+mod x 26  # x = w10 + 6
+div z 26  # z = 26(26(w1 + 3) + w8 + 13) + w9 + 1
+add x -11 # x = w10 - 5
+eql x w   # Possible! w11  = w10 - 5
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y   # z = 26(26(w1 + 3) + w8 + 13) + w9 + 1
+mul y 0
+add y w
+add y 2
+mul y x
+add z y   # z = 26(26(w1 + 3) + w8 + 13) + w9 + 1
+# 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12
+inp w
+mul x 0
+add x z
+mod x 26  # x = w9 + 1
+div z 26  # z = 26(w1 + 3) + w8 + 13
+add x 0   # x = w9 + 1
+eql x w   # Possible! w12 = w9 + 1
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1   # y = 1
+mul z y
+mul y 0
+add y w
+add y 11
+mul y x
+add z y   # z = 26(w1 + 3) + w8 + 13
+# 13 13 13 13 13 13 13 13 13 13 13 13 13 13 13
+inp w
+mul x 0
+add x z
+mod x 26  # x = w8 + 13
+div z 26
+add x -8
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 10
+mul y x
+add z y   # z = w1 + 3
+############################################
+inp w
+mul x 0
+add x z
+mod x 26  # x = w1 + 3
+div z 26  # z = 0
+add x -7  # x = w1 - 4
+eql x w   # Possible! w14 = w1 - 4
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 3
+mul y x
+add z y   # z = 0
+# So, the largest possible input is 91699394894995
+# The smallest is 51147191161261
