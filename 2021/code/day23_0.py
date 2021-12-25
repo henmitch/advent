@@ -241,7 +241,9 @@ def find_all_states(amps: List[Amphipod]) -> int:
 
         for next_amps, cost in set(all_possible_next_moves(amps)):
             shrunk = shrink(next_amps)
-            if shrunk not in so_far or cost < so_far[shrunk]:
+            # Anything over 19,000 involves extra moves of D. No thanks!
+            if (shrunk not in so_far
+                    or cost < so_far[shrunk] and not cost > 19000):
                 d = closeness(next_amps)
                 so_far[shrunk] = cost
                 heapq.heappush(to_review, (cost + d, next_amps))
