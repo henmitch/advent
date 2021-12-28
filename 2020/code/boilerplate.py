@@ -28,7 +28,7 @@ def get_data_path() -> str:
     data = requests.get(url, cookies={"session": _cookie}).text
     with open(out, "w") as f:
         f.write(data)
-    return data
+    return out
 
 
 def get_test_path() -> str:
