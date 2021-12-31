@@ -18,7 +18,7 @@ def file_name() -> str:
     return re.sub(r"_[0-9]+\.py", ".txt", caller)
 
 def day_num() -> str:
-    return re.match(r"day([0-9]+)", file_name()).group(1).strip("0")
+    return re.match(r"day([0-9]+)", file_name()).group(1).lstrip("0")
 
 def get_data_path() -> str:
     out = os.path.join(data_dir, file_name())
