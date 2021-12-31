@@ -17,7 +17,7 @@ def load_data(path: str) -> Grid:
     return [list(line) for line in raw]
 
 
-def sightline_coords(x: int, y: int, grid: Grid) -> Set[Point]:
+def sightline_vals(x: int, y: int, grid: Grid) -> Set[Point]:
     x_max, y_max = len(grid[0]) - 1, len(grid) - 1
     deltas = (
         (-1, -1),  # Top left
@@ -29,23 +29,22 @@ def sightline_coords(x: int, y: int, grid: Grid) -> Set[Point]:
         (-1, 1),  # Bottom left
         (-1, 0),  # Middle left
     )
-    out = set()
+    out = []
     for delta in deltas:
         scalar = 1
         while True:
             x_, y_ = x + scalar*delta[0], y + scalar*delta[1]
-            if x_ < 0 or x_ > x_max or y_ < 0 or y_ > y_max:
+            if x_ < 0 or y_ < 0:
                 break
-            if grid[y_][x_] != ".":
-                out |= {(x_, y_)}
+            try:
+                if (val := grid[y_][x_]) != ".":
+                    out.append(val)
+                    break
+            except IndexError:
                 break
             scalar += 1
 
-    return out
-
-
-def sightline_vals(x: int, y: int, grid: Grid) -> Tuple[Point, ...]:
-    return tuple(grid[y_][x_] for x_, y_ in sightline_coords(x, y, grid))
+    return tuple(out)
 
 
 @cache
@@ -89,7 +88,6 @@ def run(grid: Grid) -> int:
 def test():
     data = load_data(TEST_PATH)
     assert run(data) == 26
-    print("test passed")
 
 
 if __name__ == "__main__":
