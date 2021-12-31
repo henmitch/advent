@@ -55,8 +55,10 @@ def valid(psport: dict) -> bool:
 
     return True
 
+
 def count_valid(psports: List[dict]):
     return sum(valid(old.parse(psport)) for psport in psports)
+
 
 if __name__ == "__main__":
     data = old.load_data(old.DATA_PATH)

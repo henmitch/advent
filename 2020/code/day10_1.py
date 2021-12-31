@@ -20,6 +20,7 @@ def test():
     data = load_data(TEST_PATH)
     assert count_options(data) == 19208
 
+
 if __name__ == "__main__":
     test()
     data = load_data(DATA_PATH)

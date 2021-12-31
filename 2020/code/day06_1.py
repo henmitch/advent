@@ -1,5 +1,6 @@
 """https://adventofcode.com/2020/day/6"""
 from typing import Tuple
+
 import day06_0 as old
 
 

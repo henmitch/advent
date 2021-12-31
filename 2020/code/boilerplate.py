@@ -13,12 +13,15 @@ _url = "https://adventofcode.com/2020/day/{}/input"
 data_dir = os.path.join(os.path.dirname(__file__), os.pardir, "data")
 test_dir = os.path.join(os.path.dirname(__file__), os.pardir, "test")
 
+
 def file_name() -> str:
     caller = os.path.split(sys.argv[0])[1]
     return re.sub(r"_[0-9]+\.py", ".txt", caller)
 
+
 def day_num() -> str:
     return re.match(r"day([0-9]+)", file_name()).group(1).lstrip("0")
+
 
 def get_data_path() -> str:
     out = os.path.join(data_dir, file_name())

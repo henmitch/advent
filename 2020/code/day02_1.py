@@ -22,7 +22,7 @@ def load_data(path):
 
 def valid(line):
     (idx1, idx2), letter, password = line
-    return (password[idx1 - 1] == letter) ^ (password[idx2 - 1] == letter)
+    return (password[idx1 - 1] == letter)^(password[idx2 - 1] == letter)
 
 
 def count_valid(lines):
