@@ -1,7 +1,8 @@
 """https://adventofcode.com/2020/day/9"""
-from typing import Tuple
-import boilerplate as bp
 import itertools
+from typing import Tuple
+
+import boilerplate as bp
 
 TEST_PATH = bp.get_test_path()
 DATA_PATH = bp.get_data_path()

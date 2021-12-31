@@ -1,6 +1,8 @@
 """https://adventofcode.com/2020/day/5"""
 from typing import Tuple
+
 import day05_0 as old
+
 
 def find_missing(seats: Tuple[old.Seat]) -> int:
     seats = set(map(old.value, seats))

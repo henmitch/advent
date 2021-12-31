@@ -1,5 +1,6 @@
 """https://adventofcode.com/2020/day/8"""
 from typing import Tuple
+
 import day08_0 as old
 
 
@@ -41,9 +42,11 @@ def run(instructions: Tuple[Tuple[callable, int]]) -> int:
     else:
         raise ValueError("Nothing found")
 
+
 def test():
     data = old.load_data(old.TEST_PATH)
     assert run(data) == 8
+
 
 if __name__ == "__main__":
     test()

@@ -36,6 +36,7 @@ def test():
     data = load_data(TEST_PATH)
     assert valid_count(data) == 2
 
+
 if __name__ == "__main__":
     test()
     data = load_data(DATA_PATH)

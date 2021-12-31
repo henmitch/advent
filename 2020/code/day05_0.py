@@ -29,6 +29,7 @@ def value(seat: Seat) -> int:
 def highest(seats: Tuple[Seat]) -> int:
     return max(value(seat) for seat in seats)
 
+
 if __name__ == "__main__":
     data = load_data(DATA_PATH)
     print(highest(data))
