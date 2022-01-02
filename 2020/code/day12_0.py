@@ -5,10 +5,12 @@ import boilerplate as bp
 TEST_PATH = bp.get_test_path()
 DATA_PATH = bp.get_data_path()
 
+
 def load_data(path: str) -> Tuple[Tuple[str, int], ...]:
     with open(path, "r") as f:
         raw = f.read().splitlines()
     return tuple((line[0], int(line[1:])) for line in raw)
+
 
 class Boat:
     def __init__(self) -> None:
