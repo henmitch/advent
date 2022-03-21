@@ -2,6 +2,7 @@
 import functools
 import operator
 import re
+
 import boilerplate as bp
 
 Tile = list[list[str]]
