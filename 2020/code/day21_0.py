@@ -1,7 +1,8 @@
 """https://adventofcode.com/2020/day/21"""
-import operator
 import functools
+import operator
 import re
+
 import boilerplate as bp
 
 Pairing = tuple[set[str], set[str]]
@@ -12,7 +13,7 @@ DATA_PATH = bp.get_data_path()
 
 def load_data(path) -> tuple[Pairing]:
     with open(path, "r") as f:
-        raw = f.read().split("\n")
+        raw = f.read().splitlines()
     out = []
     for line in raw:
         match = re.match(r"(?P<gibberish>.*)\(contains (?P<allergens>.*)\)",
