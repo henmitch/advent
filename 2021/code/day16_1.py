@@ -9,6 +9,7 @@ import day16_0 as old
 
 
 class FancyPacket(old.Packet):
+
     def __init__(self, packet: str):
         super().__init__(packet)
 

@@ -33,20 +33,25 @@ def find_overlaps(lines: tuple[Line]) -> set[complex]:
             out |= line & comparison
     return out
 
+
 def minimum_distance(overlaps: set[complex]) -> int:
     return int(min(abs(over.real) + abs(over.imag) for over in overlaps))
+
 
 def run(data: tuple[Line, ...]) -> int:
     overlaps = find_overlaps(data)
     return minimum_distance(overlaps)
 
+
 def test():
     data = load_data(TEST_PATH)
     assert run(data) == 159
 
+
 def main():
     data = load_data(DATA_PATH)
     print(run(data))
+
 
 if __name__ == "__main__":
     test()

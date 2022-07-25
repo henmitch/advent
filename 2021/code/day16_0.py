@@ -23,6 +23,7 @@ def process(data: str) -> str:
 
 
 class Packet():
+
     def __init__(self, packet: str):
         self.packet = packet
         self.version = self.get_version()
@@ -165,7 +166,10 @@ def test():
     # That subpacket will be a literal with value 0 and 2 extra zeros
     literal_0 = "000" "100" "10000" "00000"
     extra = "0000000000000000"
-    p4 = Packet("000" "000" "1" "00000000010" + 2*literal_0 + extra)
+    p4 = Packet("000"
+                "000"
+                "1"
+                "00000000010" + 2*literal_0 + extra)
     assert p4.remainder() == extra
     assert p4.get_subpackets()[0].get_literal_value() == 0
     assert p4.get_subpackets()[1].get_literal_value() == 0

@@ -14,6 +14,7 @@ def load_data(path):
 
 
 class Player():
+
     def __init__(self, position: int, board_size: int):
         self.position = 0
         self.score = 0

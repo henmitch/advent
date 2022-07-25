@@ -31,6 +31,7 @@ def interpret(line: str) -> tuple[Line, Mapping]:
         current = current + n_steps*direction
     return out, taken
 
+
 def find_overlaps(data: tuple[tuple[Line, Mapping], ...]) -> Mapping:
     out = {}
     (line1, mapping1), (line2, mapping2) = data
