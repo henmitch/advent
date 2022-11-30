@@ -1,4 +1,4 @@
-"https://adventofcode.com/2019/day/8"
+"""https://adventofcode.com/2019/day/8"""
 from day08_0 import load_data, DATA_PATH
 
 
