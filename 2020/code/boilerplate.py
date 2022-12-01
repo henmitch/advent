@@ -29,7 +29,16 @@ def get_data_path() -> str:
     if os.path.exists(out):
         return out
     url = _url.format(day_num())
-    data = requests.get(url, cookies={"session": _cookie}).text
+    cookies = {
+        "session": _cookie,
+        "User-agent": "github.com/henmitch/advent at henry@henrymitchell.org"
+    }
+
+    data = requests.get(url,
+                        cookies=cookies).text
+    if data.startswith("Puzzle inputs differ by user.  "
+                       "Please log in to get your puzzle input."):
+        raise ValueError("Your AoC session cookie is outdated.")
     with open(out, "w") as f:
         f.write(data)
     return out
