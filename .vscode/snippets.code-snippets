@@ -28,7 +28,7 @@
 			"",
 			"def load_data(path: str) -> ${2:object}:",
 			"    with open(path, \"r\") as f:",
-			"        raw = path.read()$3",
+			"        raw = f.read()$3",
 			"",
 			"",
 			"def test():",
