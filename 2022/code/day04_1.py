@@ -1,6 +1,6 @@
 """https://adventofcode.com/2022/day/4"""
 import boilerplate as bp
-from day4_0 import load_data, TEST_PATH, DATA_PATH, Pair, completely_overlaps
+from day04_0 import load_data, TEST_PATH, DATA_PATH, Pair, completely_overlaps
 
 
 def partly_overlaps(pair: Pair) -> bool:

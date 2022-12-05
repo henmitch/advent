@@ -33,8 +33,7 @@ def get_data_path() -> str:
         "User-agent": "github.com/henmitch/advent at henry@henrymitchell.org"
     }
 
-    data = requests.get(url,
-                        cookies=cookies).text
+    data = requests.get(url, cookies=cookies).text
     if data.startswith("Puzzle inputs differ by user.  "
                        "Please log in to get your puzzle input."):
         raise ValueError("Your AoC session cookie is outdated.")

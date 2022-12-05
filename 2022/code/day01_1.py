@@ -1,6 +1,6 @@
 """https://adventofcode.com/2022/day/1"""
 import boilerplate as bp
-from day1_0 import TEST_PATH, DATA_PATH, load_data
+from day01_0 import TEST_PATH, DATA_PATH, load_data
 
 TEST_PATH = bp.get_test_path()
 DATA_PATH = bp.get_data_path()

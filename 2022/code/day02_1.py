@@ -1,6 +1,6 @@
 """https://adventofcode.com/2022/day/2"""
 import boilerplate as bp
-from day2_0 import load_data, TEST_PATH, DATA_PATH
+from day02_0 import load_data, TEST_PATH, DATA_PATH
 
 SCORES = {"X": 0, "Y": 3, "Z": 6}
 OPTIONS = ["A", "B", "C"]
