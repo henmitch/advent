@@ -51,7 +51,7 @@
 		"body": [
 			"\"\"\"https://adventofcode.com/2022/day/$1\"\"\"",
 			"import boilerplate as bp",
-			"from day$1_0 import load_data, TEST_PATH, DATA_PATH",
+			"from day$1_0 import load_data, DATA_PATH, TEST_PATH",
 			"",
 			"",
 			"def test():",

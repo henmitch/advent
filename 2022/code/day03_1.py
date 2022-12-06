@@ -1,7 +1,8 @@
 """https://adventofcode.com/2022/day/3"""
 from functools import reduce
 from operator import and_
-from day03_0 import load_data, TEST_PATH, DATA_PATH, priority
+
+from day03_0 import DATA_PATH, TEST_PATH, load_data, priority
 
 
 def identify_badge(trio: list[str]) -> str:
