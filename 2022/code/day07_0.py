@@ -1,6 +1,7 @@
 """https://adventofcode.com/2022/day/7"""
 from collections.abc import Iterator
 from dataclasses import dataclass
+
 import boilerplate as bp
 
 TEST_PATH = bp.get_test_path()
@@ -8,7 +9,6 @@ DATA_PATH = bp.get_data_path()
 
 
 class Directory:
-
     def __init__(self, name: str, contents: str = None, parent=None):
         self.name = name
         self.set_contents(contents)
@@ -30,14 +30,12 @@ class Directory:
     def set_contents(self, contents: str):
         if contents is None:
             self.contents = None
-            self.size = 0
             return
         self.contents = self._parse(contents)
-        self.size = self.get_size()
         return self
 
-    def get_size(self) -> int:
-        return sum(item.size for item in self.contents.values())
+    def size(self) -> int:
+        return sum(item.size() for item in self.contents.values())
 
     def walk(self) -> Iterator:
         for content in self.contents.values():
@@ -50,9 +48,12 @@ class Directory:
 
 @dataclass
 class File:
-    size: str
+    size_: str
     name: str
     parent: Directory
+
+    def size(self):
+        return self.size_
 
 
 def parse_input(data: str) -> Directory:
@@ -96,11 +97,12 @@ def load_data(path: str) -> object:
         raw = f.read()
     return parse_input(raw)
 
+
 def run(data: Directory) -> int:
     out = 0
     for item in data.walk():
-        if isinstance(item, Directory) and item.size <= 100_000:
-            out += item.size
+        if isinstance(item, Directory) and (size := item.size()) <= 100_000:
+            out += size
     return out
 
 
