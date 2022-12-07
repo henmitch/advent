@@ -5,8 +5,9 @@ from day05_0 import DATA_PATH, TEST_PATH, Instruction, Stack, load_data
 
 def execute(stacks: list[Stack], instruction: Instruction) -> None:
     n, start, end = instruction
-    stacks[end - 1]+= stacks[start - 1][-n:]
+    stacks[end - 1] += stacks[start - 1][-n:]
     del stacks[start - 1][-n:]
+
 
 def run(stacks: list[Stack], instructions: list[Instruction]) -> str:
     for instruction in instructions:

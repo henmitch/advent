@@ -9,6 +9,7 @@ DATA_PATH = bp.get_data_path()
 
 
 class Directory:
+
     def __init__(self, name: str, contents: str = None, parent=None):
         self.name = name
         self.set_contents(contents)

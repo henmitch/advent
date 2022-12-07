@@ -1,6 +1,6 @@
 """https://adventofcode.com/2022/day/7"""
 import boilerplate as bp
-from day07_0 import load_data, DATA_PATH, TEST_PATH, Directory, File
+from day07_0 import DATA_PATH, TEST_PATH, Directory, File, load_data
 
 
 def run(data: Directory) -> int:
