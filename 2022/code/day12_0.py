@@ -56,13 +56,13 @@ class ElevationMap:
     def cost(self, x: int, y: int, w: float = 1.0) -> int:
         return abs(self.e[0] - x) + abs(self.e[1] - y) - w*self.elevation(x, y)
 
-    def get_path_length(self, start: tuple[int, int] = None) -> int:
+    def get_path_length(self, *starts: tuple[int, int]) -> int:
         # A-star to make it more likely to find minimal path
-        if start is None:
-            start = self.s
-        to_review = {start}
-        so_far = {start: 0}
-        est_remain = {start: self.cost(*start)}
+        if not starts:
+            starts = (self.s,)
+        to_review = set(starts)
+        so_far = {start: 0 for start in starts}
+        est_remain = {start: self.cost(*start) for start in starts}
 
         while to_review:
             current = min(to_review, key=lambda p: so_far[p] + est_remain[p])
