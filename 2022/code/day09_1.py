@@ -1,5 +1,4 @@
 """https://adventofcode.com/2022/day/9"""
-import boilerplate as bp
 from day09_0 import load_data, DATA_PATH, TEST_PATH, DIRECTIONS
 
 

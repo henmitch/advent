@@ -1,6 +1,5 @@
 """https://adventofcode.com/2022/day/8"""
 import itertools
-import boilerplate as bp
 from day08_0 import DATA_PATH, TEST_PATH, load_data
 
 

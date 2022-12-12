@@ -1,5 +1,4 @@
 """https://adventofcode.com/2022/day/4"""
-import boilerplate as bp
 from day04_0 import DATA_PATH, TEST_PATH, Pair, completely_overlaps, load_data
 
 

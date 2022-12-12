@@ -1,5 +1,4 @@
 """https://adventofcode.com/2022/day/2"""
-import boilerplate as bp
 from day02_0 import DATA_PATH, TEST_PATH, load_data
 
 SCORES = {"X": 0, "Y": 3, "Z": 6}

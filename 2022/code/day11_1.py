@@ -1,6 +1,4 @@
 """https://adventofcode.com/2022/day/11"""
-import re
-from collections.abc import Iterator
 from functools import reduce
 from operator import mul
 
