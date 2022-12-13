@@ -1,5 +1,5 @@
 """https://adventofcode.com/2022/day/13"""
-import ast
+import json
 from functools import cmp_to_key
 
 from day13_0 import DATA_PATH, TEST_PATH, Packet, compare
@@ -8,7 +8,7 @@ from day13_0 import DATA_PATH, TEST_PATH, Packet, compare
 def load_data(path: str) -> list[Packet]:
     with open(path, "r") as f:
         raw = set(f.read().splitlines()) - {""}
-    return [ast.literal_eval(line) for line in raw] + [[[2]], [[6]]]
+    return [json.loads(line) for line in raw] + [[[2]], [[6]]]
 
 
 def compare_as_num(left: Packet, right: Packet) -> int:

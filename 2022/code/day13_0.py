@@ -1,5 +1,5 @@
 """https://adventofcode.com/2022/day/13"""
-import ast
+import json
 import boilerplate as bp
 
 TEST_PATH = bp.get_test_path()
@@ -33,7 +33,7 @@ def compare(left: Packet, right: Packet) -> bool | None:
 def load_data(path: str) -> list[tuple[Packet, Packet]]:
     with open(path, "r") as f:
         raw = f.read().strip().split("\n\n")
-    return [tuple(map(ast.literal_eval, pair.split("\n"))) for pair in raw]
+    return [tuple(map(json.loads, pair.split("\n"))) for pair in raw]
 
 
 def run(data):
