@@ -2,23 +2,25 @@
 from day14_0 import DATA_PATH, TEST_PATH, Cave, load_data, step
 
 
-def drop(cave: Cave) -> Cave:
-    lowest_point = max(i.imag for i in cave if cave[i] == "#") + 1
+def drop(cave: Cave, lowest_point: int = None) -> Cave:
+    if lowest_point is None:
+        lowest_point = max(i.imag for i in cave if cave[i] == "#") + 1
     p = 500 + 0j
-    path = [p]
     while p.imag < lowest_point:
-        p = step(p, cave)
-        if p in path:
-            path.append(p)
+        new_p = step(p, cave)
+        if p == new_p:
             break
-        path.append(p)
-    return cave | {p: tuple(path[:-1])}
+        p = new_p
+    else:
+        cave |= {p + i: "-" for i in [-1 + 1j, 0 + 1j, 1 + 1j]}
+    return cave | {p: "o"}
 
 
 def run(cave: Cave) -> int:
     sands = 0
+    lowest_point = max(i.imag for i in cave) + 1
     while (500 + 0j) not in cave:
-        cave = drop(cave)
+        cave = drop(cave, lowest_point)
         sands += 1
     return sands
 

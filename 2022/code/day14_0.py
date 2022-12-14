@@ -79,8 +79,8 @@ def pretty_print(cave: Cave) -> str:
         for x in range(min_x, max_x + 1):
             if (p := x + y*1j) not in cave:
                 out += "."
-            elif cave[p] == "#":
-                out += "#"
+            elif isinstance((s := cave[p]), str):
+                out += s
             else:
                 out += "o"
         out += "\n"
