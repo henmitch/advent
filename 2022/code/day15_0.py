@@ -45,19 +45,16 @@ def bounds(space: Space) -> Pair:
 
 
 def spaces_in_row(space: Space, row: int) -> int:
-    out = 0
-    top_left, bottom_right = bounds(space)
-    for x in range(int(top_left.real), int(bottom_right.real) + 1):
-        pos = x + row*1j
-        to_add = 0
-        for sensor, beacon in space:
-            if pos in {sensor, beacon}:
-                to_add = 0
-                break
-            if distance(sensor, pos) <= distance(sensor, beacon):
-                to_add = 1
-        out += to_add
-    return out
+    out = set()
+    for center, beacon in space:
+        l = length(beacon - center)
+        if not center.imag + l >= row >= center.imag - l:
+            continue
+        out |= set(
+            range(
+                int(center.real) - (l - abs(int(center.imag) - row)),
+                int(center.real) + (l - abs(int(center.imag) - row))))
+    return len(out)
 
 
 def test():
@@ -72,4 +69,4 @@ def main():
 
 if __name__ == "__main__":
     test()
-    # main()
+    main()
