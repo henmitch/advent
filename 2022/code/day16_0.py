@@ -103,6 +103,9 @@ def round_trip(data: dict[str, Cave],
                 distances[k] += m
     return distances
 
+def magic_score(data: dict[str, Cave], path: tuple[Cave]) -> int:
+    return sum(cave.rate for cave in data.values() if cave not in path)
+
 
 def find_path(
     data: dict[str, Cave],
@@ -113,8 +116,9 @@ def find_path(
         excluded = []
     distances = shortest_distances(data)
     to_check = [(data["AA"], )]
-    # Path: (pressure per time, time, total pressure)
-    scores = {(data["AA"], ): (data["AA"].rate, 0, 0)}
+    # Path: (pressure per time, time, total pressure, end pressure)
+    scores = {(data["AA"], ): (data["AA"].rate, 0, 0, 0)}
+    max_so_far = 0
 
     while to_check:
         checking = to_check.pop(0)
@@ -123,25 +127,26 @@ def find_path(
                     or pair[1] in excluded):
                 continue
             to_add = checking + (pair[1], )
-            rate, time, pressure = scores[checking]
+            rate, time, pressure, end_pressure = scores[checking]
             if time >= duration:
                 continue
             new_rate = rate + pair[1].rate
             new_time = time + distances[pair]
             new_pressure = pressure + rate*distances[pair]
-            scores[to_add] = (new_rate, new_time, new_pressure)
+            end_pressure = new_pressure + new_rate*(duration - new_time)
+            if end_pressure > max_so_far:
+                max_so_far = end_pressure
+            if end_pressure + magic_score(data, checking) < max_so_far:
+                continue
+            scores[to_add] = (new_rate, new_time, new_pressure, end_pressure)
             to_check.append(to_add)
-
-    for path, score in scores.items():
-        scores[path] = (score[0], duration,
-                        score[2] + score[0]*(duration - score[1]))
 
     return scores, max(scores, key=lambda x: scores[x][-1])
 
 
 def run(data: dict[str, Cave], duration: int = 30) -> int:
     d, path = find_path(data, duration)
-    return d[path][2]
+    return d[path][3]
 
 
 def test():
