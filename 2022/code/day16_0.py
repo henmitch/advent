@@ -106,10 +106,12 @@ def round_trip(data: dict[str, Cave],
 
 def find_path(
     data: dict[str, Cave],
-    duration: int = 30
+    duration: int = 30,
+    excluded: list[Cave] = None
 ) -> tuple[dict[tuple[Cave, ...], tuple[int, int, int]], list[Cave]]:
+    if excluded is None:
+        excluded = []
     distances = shortest_distances(data)
-
     to_check = [(data["AA"], )]
     # Path: (pressure per time, time, total pressure)
     scores = {(data["AA"], ): (data["AA"].rate, 0, 0)}
@@ -117,7 +119,8 @@ def find_path(
     while to_check:
         checking = to_check.pop(0)
         for pair in distances:
-            if pair[0] is not checking[-1] or pair[1] in checking:
+            if (pair[0] is not checking[-1] or pair[1] in checking
+                    or pair[1] in excluded):
                 continue
             to_add = checking + (pair[1], )
             rate, time, pressure = scores[checking]
