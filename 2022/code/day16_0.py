@@ -1,6 +1,7 @@
 """https://adventofcode.com/2022/day/16"""
 from __future__ import annotations
 
+from functools import cache
 import re
 from collections.abc import Iterator
 from math import inf
@@ -103,15 +104,15 @@ def round_trip(data: dict[str, Cave],
                 distances[k] += m
     return distances
 
-def magic_score(data: dict[str, Cave], path: tuple[Cave]) -> int:
+
+@cache
+def magic_score(data: dict[str, Cave], path: set[Cave]) -> int:
     return sum(cave.rate for cave in data.values() if cave not in path)
 
 
-def find_path(
-    data: dict[str, Cave],
-    duration: int = 30,
-    excluded: list[Cave] = None
-) -> tuple[dict[tuple[Cave, ...], tuple[int, int, int]], list[Cave]]:
+def find_path(data: dict[str, Cave],
+              duration: int = 30,
+              excluded: list[Cave] = None) -> int:
     if excluded is None:
         excluded = []
     distances = shortest_distances(data)
@@ -136,17 +137,16 @@ def find_path(
             end_pressure = new_pressure + new_rate*(duration - new_time)
             if end_pressure > max_so_far:
                 max_so_far = end_pressure
-            if end_pressure + magic_score(data, checking) < max_so_far:
+            if end_pressure + magic_score(data, set(checking)) < max_so_far:
                 continue
             scores[to_add] = (new_rate, new_time, new_pressure, end_pressure)
             to_check.append(to_add)
 
-    return scores, max(scores, key=lambda x: scores[x][-1])
+    return max_so_far
 
 
 def run(data: dict[str, Cave], duration: int = 30) -> int:
-    d, path = find_path(data, duration)
-    return d[path][3]
+    return find_path(data, duration)
 
 
 def test():

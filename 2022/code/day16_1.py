@@ -5,10 +5,7 @@ import boilerplate as bp
 from day16_0 import DATA_PATH, TEST_PATH, Cave, find_path, load_data
 
 
-def find_path_pair(
-    data: dict[str, Cave],
-    duration: int = 26
-) -> tuple[dict[tuple[Cave, ...], tuple[int, int, int]], list[Cave]]:
+def find_path_pair(data: dict[str, Cave], duration: int = 26) -> int:
     # All the non-zero caves (plus AA)
     nonzero = [cave for cave in data.values() if cave.rate > 0]
     out = 0
@@ -20,9 +17,9 @@ def find_path_pair(
             if not n%100:
                 print(n)
             mine, elephants = combo, list(set(nonzero) - set(combo))
-            my_d, my_path = find_path(data, duration, elephants)
-            elephants_d, elephants_path = find_path(data, duration, mine)
-            out = max(out, my_d[my_path][3] + elephants_d[elephants_path][3])
+            my_score = find_path(data, duration, elephants)
+            elephants_score = find_path(data, duration, mine)
+            out = max(out, my_score + elephants_score)
     return out
 
 
