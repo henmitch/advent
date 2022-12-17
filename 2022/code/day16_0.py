@@ -81,99 +81,69 @@ def shortest_distances(data: dict[str, Cave]) -> dict[Pair, int]:
     return out
 
 
-def round_trip(data: dict[str, Cave]) -> dict[Pair, int]:
+def round_trip(data: dict[str, Cave],
+               exclude: list[Cave] = None) -> dict[Pair, int]:
+    if exclude is None:
+        exclude = []
     distances = shortest_distances(data)
     # Add the minimum distance to a valve that has some flow rate
     for cave in data.values():
+        if not cave.rate:
+            continue
+        to_reaches = [
+            distances[k] - 1 for k in distances
+            if k[0] is cave and k[1] not in exclude
+        ]
+        if to_reaches:
+            m = min(to_reaches)
+        else:
+            m = 1000
         for k in distances:
-            m = min(distances[k] for k in distances if k[1] is cave)
             if cave is k[1]:
                 distances[k] += m
     return distances
 
 
-def make_matrix(data: dict[Pair, int]) -> dict[Pair, float]:
-    # Turning into a bang-to-buck ratio
-    return {k: k[1].rate/v for k, v in data.items()}
-
-
-def mean(nums: list[int | float]) -> float:
-    if not nums:
-        return 0
-    return sum(nums)/len(nums)
-
-
-def make_roi(matrix: dict[Pair, float],
-             exclude: list[Cave] = None) -> dict[str, float]:
-    # The expected value of leaving a given cave
-    if exclude is None:
-        exclude = []
-    # Get all the unique cave names:
-    caves = {k[0]: [] for k in matrix if k[0] not in exclude}
-    # Bang-to-buck ratio of each path from k
-    for pair in matrix:
-        if pair[0] in exclude or pair[1] in exclude:
-            continue
-        caves[pair[0]].append(matrix[pair])
-    return {k: mean(v) for k, v in caves.items()}
-
-
-def find_path(data: dict[str, Cave]) -> list[Cave]:
+def find_path(
+    data: dict[str, Cave],
+    duration: int = 30
+) -> tuple[dict[tuple[Cave, ...], tuple[int, int, int]], list[Cave]]:
     distances = shortest_distances(data)
-    matrix = make_matrix(distances)
 
-    current = data["AA"]
-    seen = [current]
-    # To make sure we hit every non-zero point once
-    l = len([v for v in data.values() if v.rate > 0])
-    for _ in range(l):
-        roi = make_roi(matrix, exclude=seen)
-        max_so_far = 0
-        for k, v in matrix.items():
-            if k[0] is not current or k[1] in seen:
+    to_check = [(data["AA"], )]
+    # Path: (pressure per time, time, total pressure)
+    scores = {(data["AA"], ): (data["AA"].rate, 0, 0)}
+
+    while to_check:
+        checking = to_check.pop(0)
+        for pair in distances:
+            if pair[0] is not checking[-1] or pair[1] in checking:
                 continue
-            if v + roi[k[1]] > max_so_far:
-                next_step = k[1]
-                max_so_far = v + roi[k[1]]
-        seen.append(next_step)
-        current = next_step
-    return seen
+            to_add = checking + (pair[1], )
+            rate, time, pressure = scores[checking]
+            if time >= duration:
+                continue
+            new_rate = rate + pair[1].rate
+            new_time = time + distances[pair]
+            new_pressure = pressure + rate*distances[pair]
+            scores[to_add] = (new_rate, new_time, new_pressure)
+            to_check.append(to_add)
+
+    for path, score in scores.items():
+        scores[path] = (score[0], duration,
+                        score[2] + score[0]*(duration - score[1]))
+
+    return scores, max(scores, key=lambda x: scores[x][-1])
 
 
 def run(data: dict[str, Cave], duration: int = 30) -> int:
-    path = find_path(data)
-    distances = shortest_distances(data)
-    pairs = zip(path, path[1:])
-    time = 0
-    current_rate = 0
-    out = 0
-    # Until the clock runs out...
-    while time < duration:
-        try:
-            pair = next(pairs)
-        except StopIteration:
-            time += 1
-            # Add the pressure we're currently adding
-            out += current_rate
-            continue
-        # Check and see if we have time to go to the next cave
-        distance = distances[pair]
-        if time + distance > duration:
-            # If we don't, run out the clock
-            out += current_rate*(duration - time)
-            time = duration
-            continue
-        # If we do have time to go to the next cave, we do it.
-        time += distance
-        out += distance*current_rate
-        current_rate += pair[1].rate
-    return out
+    d, path = find_path(data, duration)
+    return d[path][2]
 
 
 def test():
     data = load_data(TEST_PATH)
-    out = run(data)
-    print(out)
+    assert run(data) == 1651
 
 
 def main():
