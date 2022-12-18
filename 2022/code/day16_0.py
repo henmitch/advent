@@ -1,7 +1,6 @@
 """https://adventofcode.com/2022/day/16"""
 from __future__ import annotations
 
-from functools import cache
 import re
 from collections.abc import Iterator
 from math import inf
@@ -105,7 +104,6 @@ def round_trip(data: dict[str, Cave],
     return distances
 
 
-@cache
 def magic_score(data: dict[str, Cave], path: set[Cave]) -> int:
     return sum(cave.rate for cave in data.values() if cave not in path)
 
@@ -137,6 +135,8 @@ def find_path(data: dict[str, Cave],
             end_pressure = new_pressure + new_rate*(duration - new_time)
             if end_pressure > max_so_far:
                 max_so_far = end_pressure
+            if new_time > duration:
+                continue
             if end_pressure + magic_score(data, set(checking)) < max_so_far:
                 continue
             scores[to_add] = (new_rate, new_time, new_pressure, end_pressure)
