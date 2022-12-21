@@ -1,5 +1,7 @@
 """https://adventofcode.com/2022/day/19"""
 import re
+from math import ceil
+
 import boilerplate as bp
 
 Rocks = tuple[int, int, int, int]
@@ -28,110 +30,96 @@ def load_data(path: str) -> list[Blueprint]:
     return [parse(line) for line in raw]
 
 
-def bots_available(rocks: Rocks, blueprint: Blueprint) -> Bots:
-    return tuple(
-        all(rock >= need for rock, need in zip(rocks, needs))
-        for needs in blueprint[1:])
+def next_bots(rocks: Rocks,
+              bots: Bots,
+              blueprint: Blueprint,
+              time: int,
+              duration: int = 24) -> set[tuple[int, Rocks, Bots]]:
+    """Return all next possible bots"""
+    out = set()
+    # Go through each possible bot
+    for i in range(4):
+        # The blueprint for the current bot
+        botprint = blueprint[i + 1]
+        # See whether we have the necessary equipment to build it
+        if any(need and not have for need, have in zip(botprint, bots)):
+            # Bail if we don't
+            continue
+
+        # Find the time it would take to build it
+        time_taken = max(1 + ceil((need - have)/bot)
+                         for need, have, bot in zip(botprint, rocks, bots)
+                         if need > 0)
+        # If we could've built it before,
+        if time_taken <= 0:
+            # don't.
+            continue
+
+        new_time = time + time_taken
+        # If we're past `duration` minutes,
+        if new_time >= duration:
+            # show us the world where we don't build any bots
+            out |= {(duration,
+                     tuple(have + (duration - time)*bot
+                           for have, bot in zip(rocks[:-1], bots[:-1])) +
+                     (rocks[-1], ), bots)}
+            continue
+
+        # Otherwise, build it.
+        # If we're building a geode bot, count all its contributions to the end
+        if i == 3:
+            new_bots = bots[:i] + (bots[i] + 1, )
+            new_rocks = tuple(rock + time_taken*bot - need
+                              for rock, bot, need in zip(
+                                  rocks[:-1], bots[:-1], botprint[:-1]))
+            new_rocks += (rocks[-1] + duration - new_time, )
+        else:
+            new_bots = bots[:i] + (bots[i] + 1, ) + bots[i + 1:]
+            new_rocks = tuple(
+                have + time_taken*bot - use for have, bot, use in zip(
+                    rocks[:-1], bots[:-1], botprint[:-1])) + (rocks[-1], )
+
+        out |= {(new_time, new_rocks, new_bots)}
+    return out
 
 
-def most_rocks(blueprint: Blueprint) -> Rocks:
-    return tuple(map(max, zip(*blueprint[1:])))
-
-
-def make_bot(idx: int, rocks: Rocks, bots: Bots,
-             blueprint: Blueprint) -> tuple[Rocks, Bots]:
-    to_make = blueprint[idx + 1]
-    new_bots = tuple(bot + int(i == idx) for i, bot in enumerate(bots))
-    new_rocks = tuple(rock + bot - cost
-                      for rock, bot, cost in zip(rocks, bots, to_make))
-    return new_rocks, new_bots
-
-
-def mine_rocks(rocks: Rocks, bots: Bots) -> Rocks:
-    return tuple(rock + bot for rock, bot in zip(rocks, bots))
-
-
-def ideal_world(time: int, rocks: Rocks, bots: Bots,
-                blueprint: Blueprint) -> int:
-    """Whether, in an ideal world where we can build anything at a given time,
-    we could get more geodes"""
-    for _ in range(time):
-        for i, bot in enumerate(bots_available(rocks, blueprint)):
-            rocks = mine_rocks(rocks, bots)
-            if not bot:
-                continue
-            to_make = blueprint[i + 1]
-            new_bots = tuple(bot + int(j == i) for j, bot in enumerate(bots))
-            new_rocks = tuple(rock - cost
-                              for rock, cost in zip(rocks, to_make))
-            rocks = tuple(map(min, zip(rocks, new_rocks)))
-            bots = tuple(map(max, zip(bots, new_bots)))
-    return rocks[-1]
-
-
-def find_max_geodes(blueprint: Blueprint, duration: int = 24) -> int:
-    mosts = most_rocks(blueprint)
-
+def max_geodes(blueprint: Blueprint, duration: int = 24) -> int:
     start_time = 0
     start_rocks = (0, 0, 0, 0)
     start_bots = (1, 0, 0, 0)
 
     to_check = {(start_time, start_rocks, start_bots)}
+    seen = set()
+
+    time_of_first_geode = duration + 1
     out = 0
-    pruner = (duration + 1, 0)
 
-    steps = 0
     while to_check:
-        time, rocks, bots = to_check.pop()
-        # If we have a geode, then we can ignore any possibilities with fewer
-        # geodes by now
+        current = time, rocks, bots = max(to_check, key=lambda x: x[1][-1])
+        to_check.remove(current)
+        seen.add(current)
+        # If we've had a geode at time t and we have no geodes at a time later
+        # than t, we're barking up the wrong tree
+        if time > time_of_first_geode and not rocks[-1]:
+            continue
+        # If we couldn't get enough geodes by building one bot per minute for
+        # the remaining time, bail
+        if rocks[-1] + sum(range(time, duration)) <= out:
+            continue
+        # If this is the best we've done (earliest to get geodes), then we
+        # update our best
         if rocks[-1]:
-            if time > pruner[0] and rocks[-1] < pruner[1]:
-                continue
-            else:
-                pruner = (time, rocks[-1])
-        elif time >= pruner[0]:
-            continue
-
-        ideal = ideal_world(duration - time, rocks, bots, blueprint)
-        if ideal < max(1, pruner[1]):
-            continue
-
-        # Once we reach `duration` minutes, we stop
-        if time == duration or (time == duration - 1 and not bots[-1]):
-            out = max(out, rocks[-1])
-            continue
-
-        next_time = time + 1
-
-        avail = bots_available(rocks, blueprint)
-        # If we can get a geode bot, get it and ignore other possibilities
-        if avail[-1]:
-            to_check.add((next_time, *make_bot(3, rocks, bots, blueprint)))
-            continue
-
-        # Otherwise, see about building each of the other bots
-        for i, bot in enumerate(avail[:-1]):
-            if not bot:
-                continue
-            next_rocks, next_bots = make_bot(i, rocks, bots, blueprint)
-            if any(bot > most
-                   for bot, most in zip(next_bots[:-1], mosts[:-1])):
-                continue
-            to_check.add((next_time, next_rocks, next_bots))
-
-        next_rocks = mine_rocks(rocks, bots)
-        to_check.add((next_time, next_rocks, bots))
-        steps += 1
-        if not steps%10000:
-            print(steps)
+            time_of_first_geode = min(time, time_of_first_geode)
+        # The maximum number of geodes
+        out = max(out, rocks[-1])
+        to_check |= next_bots(rocks, bots, blueprint, time, duration) - seen
 
     print(blueprint[0], out)
     return out
 
 
-def quality(blueprint: Blueprint) -> int:
-    return find_max_geodes(blueprint)*blueprint[0]
+def quality(blueprint: Blueprint, duration: int = 24) -> int:
+    return blueprint[0]*max_geodes(blueprint, duration)
 
 
 def run(data: list[Blueprint]) -> int:
@@ -141,10 +129,6 @@ def run(data: list[Blueprint]) -> int:
 def test():
     data = load_data(TEST_PATH)
     assert run(data) == 33
-    print("Passed")
-
-    data = load_data(DATA_PATH)
-    print(find_max_geodes(data[1]))
 
 
 def main():
@@ -154,4 +138,4 @@ def main():
 
 if __name__ == "__main__":
     test()
-    # main()
+    main()
