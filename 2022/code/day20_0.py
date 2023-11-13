@@ -37,7 +37,6 @@ def run(base: list[int]) -> int:
     return sum(data[n%len(data)][1] for n in [1000, 2000, 3000])
 
 
-
 def test():
     data = load_data(TEST_PATH)
     assert run(data) == 3

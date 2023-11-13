@@ -62,7 +62,7 @@ def round(monkeys: list[Monkey]) -> list[Monkey]:
 def run(monkeys: list[Monkey], n: int = 20) -> int:
     for i in range(n):
         monkeys = round(monkeys)
-        if not (i + 1) % 500:
+        if not (i + 1)%500:
             print(f"{i + 1}/{n}")
     viewings = sorted(monkey.total_inspections for monkey in monkeys)
     return viewings[-1]*viewings[-2]

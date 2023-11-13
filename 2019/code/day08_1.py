@@ -18,7 +18,7 @@ def stack(layers: list[str]) -> str:
 def reshape(data: str, width: int = 25, height: int = 6) -> tuple[str, ...]:
     out = ()
     for row_num in range(height):
-        out = out + (data[row_num*width:(row_num + 1)*width],)
+        out = out + (data[row_num*width:(row_num + 1)*width], )
     return out
 
 

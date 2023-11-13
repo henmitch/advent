@@ -59,7 +59,7 @@ class ElevationMap:
     def get_path_length(self, *starts: tuple[int, int]) -> int:
         # A-star to make it more likely to find minimal path
         if not starts:
-            starts = (self.s,)
+            starts = (self.s, )
         to_review = set(starts)
         so_far = {start: 0 for start in starts}
         est_remain = {start: self.cost(*start) for start in starts}
