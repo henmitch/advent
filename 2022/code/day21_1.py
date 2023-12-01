@@ -145,7 +145,6 @@ def find_answer(data: dict[str, Operation | int]) -> int:
     lhs, rhs = root.values
     rhs = rhs.collapse()
     while "humn" not in [lhs, rhs]:
-        print(f"{lhs};{rhs}")
         new_lhs, inv = lhs.inverse()
         lhs, rhs = new_lhs, inv(rhs)
     return ({lhs, rhs} - {"humn"}).pop()
