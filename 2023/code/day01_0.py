@@ -3,7 +3,7 @@ import re
 
 import boilerplate as bp
 
-TEST_PATH = bp.get_test_path()
+TEST_PATH = bp.get_test_path("0")
 DATA_PATH = bp.get_data_path()
 
 
