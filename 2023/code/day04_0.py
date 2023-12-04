@@ -25,15 +25,9 @@ class Card:
         return len(set(self.wins) & set(self.nums))
 
     def score(self):
-        out = 0
-        for num in self.nums:
-            if num not in self.wins:
-                continue
-            if not out:
-                out = 1
-            else:
-                out *= 2
-        return out
+        if not (n := self.n_matches()):
+            return 0
+        return 2**(n - 1)
 
 
 def load_data(path: str) -> list[Card]:
