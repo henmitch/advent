@@ -11,16 +11,16 @@ class Mappings:
         self.mappings = nums
 
     def map_(self, num: int) -> int:
-        for to, start, length in self.mappings:
-            if start <= num <= start + length:
+        for to, start, l in self.mappings:
+            if start <= num < start + l:
                 return to + (num - start)
         return num
 
     def start_endpoints(self) -> list[int]:
-        return [(start, start + length) for _, start, length in self.mappings]
+        return sorted((start, start + l - 1) for _, start, l in self.mappings)
 
     def end_endpoints(self) -> list[int]:
-        return [(to, to + length) for to, _, length in self.mappings]
+        return [(to, to + l - 1) for to, _, l in self.mappings]
 
 
 def load_data(path: str) -> tuple[list[int], list[list[Mappings]]]:
