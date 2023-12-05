@@ -5,7 +5,7 @@ TEST_PATH = bp.get_test_path()
 DATA_PATH = bp.get_data_path()
 
 
-class Mapping:
+class Mappings:
 
     def __init__(self, nums: list[tuple[int, int, int]]) -> None:
         self.mappings = nums
@@ -17,29 +17,29 @@ class Mapping:
         return num
 
 
-def load_data(path: str) -> tuple[list[int], list[list[Mapping]]]:
+def load_data(path: str) -> tuple[list[int], list[list[Mappings]]]:
     with open(path, "r") as f:
         raw = f.read().split("\n\n")
-    raw_seeds, *raw_mappings = raw
+    raw_seeds, *raw_mappingses = raw
 
     seeds = list(map(int, raw_seeds.split(": ")[1].split()))
 
-    mappings = []
-    for mapping in raw_mappings:
-        mapping = mapping.splitlines()[1:]
-        mapping = [list(map(int, line.split())) for line in mapping]
-        mappings.append(Mapping(mapping))
+    mappingses = []
+    for mappings in raw_mappingses:
+        mappings = mappings.splitlines()[1:]
+        mappings = [list(map(int, line.split())) for line in mappings]
+        mappingses.append(Mappings(mappings))
 
-    return seeds, mappings
+    return seeds, mappingses
 
 
-def run(data: tuple[list[int], list[Mapping]]) -> int:
+def run(data: tuple[list[int], list[Mappings]]) -> int:
     outs = []
-    ns, mappings = data
+    ns, mappingses = data
     for n in ns:
         current = n
-        for mapping in mappings:
-            current = mapping.map_(current)
+        for mappings in mappingses:
+            current = mappings.map_(current)
         outs.append(current)
     out = min(outs)
     return out
