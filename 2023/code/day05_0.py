@@ -16,6 +16,12 @@ class Mappings:
                 return to + (num - start)
         return num
 
+    def start_endpoints(self) -> list[int]:
+        return [(start, start + length) for _, start, length in self.mappings]
+
+    def end_endpoints(self) -> list[int]:
+        return [(to, to + length) for to, _, length in self.mappings]
+
 
 def load_data(path: str) -> tuple[list[int], list[list[Mappings]]]:
     with open(path, "r") as f:
