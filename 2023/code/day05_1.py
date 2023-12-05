@@ -9,9 +9,27 @@ def run(data: tuple[list[int], list[Mappings]]) -> int:
     for mappings in mappingses:
         care_about_next = []
         next_endpoints = mappings.start_endpoints()
-        # TODO: Create new endpoints depending on overlap
+        to_add = []
+        for lower, upper in care_about_now:
+            for lower_m, upper_m in next_endpoints:
+                # If mapping entirely enclosed...
+                if lower < lower_m and upper_m < upper:
+                    # Break into 3
+                    to_add += [(lower, lower_m-1), (lower_m, upper_m),
+                               (upper_m+1, upper)]
+                # If mapping contains upper bound...
+                elif lower < lower_m < upper:
+                    # Break into 2
+                    to_add += [(lower, lower_m-1), (lower_m, upper)]
+                # If mapping contains lower bound...
+                elif lower < upper_m < upper:
+                    # break into 2
+                    to_add += [(lower, upper_m), (upper_m+1, upper)]
+        care_about_now += to_add
+        for lower, upper in care_about_now:
+            care_about_next.append((mappings.map_(lower), mappings.map_(upper)))
         care_about_now = care_about_next
-    return min(care_about_now)
+    return min(care_about_now)[0]
 
 
 def test():
