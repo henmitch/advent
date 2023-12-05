@@ -1,4 +1,4 @@
-"""https://adventofcode.com/2023/day/3"""
+"""https://adventofcode.com/2023/day/4"""
 from day04_0 import DATA_PATH, TEST_PATH, Card, load_data
 
 
