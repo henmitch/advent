@@ -1,5 +1,5 @@
 """https://adventofcode.com/2023/day/6"""
-from day06_0 import race, TEST_PATH, DATA_PATH
+from day06_0 import DATA_PATH, TEST_PATH, race
 
 
 def load_data(path: str) -> tuple[int, int]:

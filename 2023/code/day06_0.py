@@ -1,5 +1,6 @@
 """https://adventofcode.com/2023/day/6"""
 import math
+
 import boilerplate as bp
 
 TEST_PATH = bp.get_test_path()
