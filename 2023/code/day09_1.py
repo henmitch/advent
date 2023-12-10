@@ -1,9 +1,5 @@
 """https://adventofcode.com/2023/day/9"""
-import boilerplate as bp
-from day09_0 import get_diff, load_data
-
-TEST_PATH = bp.get_test_path()
-DATA_PATH = bp.get_data_path()
+from day09_0 import DATA_PATH, TEST_PATH, get_diff, load_data
 
 
 def predict(nums: list[int]) -> int:
