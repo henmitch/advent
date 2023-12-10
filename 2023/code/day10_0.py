@@ -13,6 +13,7 @@ PIPES = {
     "F": ("E", "S")
 }
 DIRS = {"N": 0 - 1j, "E": 1 + 0j, "S": 0 + 1j, "W": -1 + 0j}
+PIPES = {key: tuple(DIRS[v] for v in value) for key, value in PIPES.items()}
 OPPOSITES = {"N": "S", "S": "N", "E": "W", "W": "E"}
 
 
@@ -31,10 +32,10 @@ class Pipes:
         self.start = self.get_starting_point()
 
     def __getitem__(self, loc: complex) -> str:
-        if self.oob(loc):
-            raise ValueError(f"{loc} is out of bounds")
-        x, y = loc.real, loc.imag
-        return self.data[int(y)][int(x)]
+        try:
+            return self.data[int(loc.imag)][int(loc.real)]
+        except IndexError as e:
+            raise IndexError(f"Index {loc} not found") from e
 
     def get_starting_point(self) -> complex:
         for i, line in enumerate(self.data):
@@ -44,7 +45,7 @@ class Pipes:
         raise NotImplementedError("Cannot analyze map without S")
 
     def oob(self, loc: complex) -> bool:
-        if any(pt < 0 for pt in [loc.real, loc.imag]):
+        if loc.real < 0 or loc.imag < 0:
             return True
         if loc.imag >= self.height or loc.real >= self.width:
             return True
@@ -53,22 +54,16 @@ class Pipes:
     def get_neighbors(self, loc: complex) -> set[complex]:
         out = []
         if self[loc] == "S":
-            for dir_, step in DIRS.items():
+            for _, step in DIRS.items():
                 if self.oob(new_point := loc + step):
                     continue
                 if self[new_point] not in PIPES:
                     continue
-                if OPPOSITES[dir_] in PIPES[self[new_point]]:
+                if -step in PIPES[self[new_point]]:
                     out += [new_point]
             return set(out)
 
-        dirs_pipe_goes = [
-            step for dir_, step in DIRS.items() if dir_[0] in PIPES[self[loc]]
-        ]
-        for step in dirs_pipe_goes:
-            if self.oob(new_point := loc + step):
-                continue
-            out += [new_point]
+        out = [loc + step for step in PIPES[self[loc]]]
         return set(out)
 
     def walk(self) -> list[complex]:

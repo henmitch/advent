@@ -1,10 +1,11 @@
 """https://adventofcode.com/2022/day/10"""
 import itertools
+import time
 from collections import deque
 from typing import Any
 
 import boilerplate as bp
-from day10_0 import DATA_PATH, DIRS, PIPES, Pipes, load_data
+from day10_0 import DATA_PATH, DIRS, Pipes, load_data
 
 TEST_PATH_08 = bp.get_test_path("08")
 TEST_PATH_10 = bp.get_test_path("10")
@@ -23,6 +24,14 @@ SEPARATES = {
     "7": (("SW", ), ("SE", "E", "NE", "N", "NW")),
     "F": (("SE", ), ("NE", "N", "NW", "W", "SW")),
 }
+SEPARATES = {
+    key: tuple(tuple(ALL_DIRS[dir_] for dir_ in val) for val in group)
+    for key, group in SEPARATES.items()
+}
+POINTS_AROUND = {
+    key: set(dir_ for group in value for dir_ in group)
+    for key, value in SEPARATES.items()
+}
 
 
 def get_other(s: Any, groups: tuple[tuple, tuple]) -> tuple:
@@ -40,10 +49,11 @@ def get_group(s: Any, groups: tuple[tuple, tuple]) -> tuple:
 
 
 def is_integral(c: complex) -> bool:
-    return all(v == int(v) for v in [c.real, c.imag])
+    return c.real == int(c.real) and c.imag == int(c.imag)
 
 
 def run(data: Pipes) -> int:
+    start_time = time.time()
     pipes = Pipes(data)
     bounds = pipes.walk()
 
@@ -51,39 +61,49 @@ def run(data: Pipes) -> int:
     loc = bounds[1]
     pipe = pipes[loc]
     add_to_left, add_to_right = SEPARATES[pipe]
-    left = {loc + ALL_DIRS[l] for l in add_to_left if l not in bounds}
-    left |= {loc + ALL_DIRS[l]/2 for l in add_to_left}
-    right = {loc + ALL_DIRS[r] for r in add_to_right if r not in bounds}
-    right |= {loc + ALL_DIRS[r]/2 for r in add_to_right}
+    left = {loc + l for l in add_to_left if loc + l not in bounds}
+    left |= {loc + l/2 for l in add_to_left}
+    right = {loc + r for r in add_to_right if loc + r not in bounds}
+    right |= {loc + r/2 for r in add_to_right}
 
+    # At each boundary point...
     for loc in bounds[2:]:
         pipe = pipes[loc]
-        for dir_, step in ALL_DIRS.items():
-            if dir_ in PIPES[pipe]:
-                continue
-            if loc + step in bounds:
-                step /= 2
-            next_point = loc + step
+        # Look at all the points around it...
+        for step in POINTS_AROUND[pipe]:
+            # And, if the point we're looking at is in the boundary, change to
+            # look in between the boundaries
+            if (next_point := loc + step) in bounds:
+                next_point -= step/2
+            # Now, if the point we're looking at has already been identified as
+            # left, we lump all other points in its sector (as determined by
+            # the pipe) together as left, and everybody else is right.
             if next_point in left:
-                add_to_left = get_group(dir_, SEPARATES[pipe])
-                add_to_right = get_other(dir_, SEPARATES[pipe])
+                add_to_left = get_group(step, SEPARATES[pipe])
+                add_to_right = get_other(step, SEPARATES[pipe])
                 break
+            # Vice versa, otherwise
             if next_point in right:
-                add_to_left = get_other(dir_, SEPARATES[pipe])
-                add_to_right = get_group(dir_, SEPARATES[pipe])
+                add_to_left = get_other(step, SEPARATES[pipe])
+                add_to_right = get_group(step, SEPARATES[pipe])
                 break
+        # If none of our points have already been identified, say so.
         else:
             print(f"Didn't find a place for {loc}")
+
         for l in add_to_left:
-            to_add = loc + ALL_DIRS[l]
+            to_add = loc + l
             if to_add not in bounds:
                 left.add(to_add)
-            left.add(to_add - ALL_DIRS[l]/2)
+            left.add(to_add - l/2)
+
         for r in add_to_right:
-            to_add = loc + ALL_DIRS[r]
+            to_add = loc + r
             if to_add not in bounds:
                 right.add(to_add)
-            right.add(to_add - ALL_DIRS[r]/2)
+            right.add(to_add - r/2)
+
+    print(f"Time to find left/right: {time.time() - start_time}")
 
     frame = ([-1 + y*1j for y in range(pipes.height)] +
              [pipes.width + y*1j for y in range(pipes.height)] +
@@ -101,17 +121,20 @@ def run(data: Pipes) -> int:
             for side in (left, right):
                 if next_ in side:
                     inside = get_other(side, ((left, ), (right, )))[0]
+                    to_check = deque([])
                     break
-            if pipes.oob(next_):
-                continue
-            if next_ in bounds:
-                continue
-            if next_ in connected_to_edge:
-                continue
-            if next_ in to_check:
-                continue
+            else:
+                if next_ in to_check:
+                    continue
+                if next_ in connected_to_edge:
+                    continue
+                if next_ in bounds:
+                    continue
+                if pipes.oob(next_):
+                    continue
 
-            to_check.append(next_)
+                to_check.append(next_)
+    print(f"Time to determine inside: {time.time() - start_time}")
 
     inside = {v for v in inside if is_integral(v)} - set(bounds)
 
@@ -123,8 +146,8 @@ def run(data: Pipes) -> int:
             if (next_ := current + step) not in bounds and next_ not in inside:
                 inside.add(next_)
                 to_check.append(next_)
+    print(f"Time to complete inside: {time.time() - start_time}")
 
-    print(pretty_print(pipes, bounds, right, left))
     return len(inside)
 
 
@@ -159,5 +182,5 @@ def main():
 
 
 if __name__ == "__main__":
-    test()
+    # test()
     main()
