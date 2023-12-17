@@ -62,36 +62,40 @@ class Array(UserList):
         out = []
         disallowed = {-state.direction, state.direction}
         for d in CARDINAL_DIRECTIONS - disallowed:
+            if self.oob(state.loc + d*ls[0]):
+                continue
+            cost = sum(self[state.loc + l*d] for l in range(1, ls[0]))
             for length in ls:
                 if not self.oob(new_loc := state.loc + length*d):
-                    cost = sum(self[state.loc + l*d]
-                               for l in range(1, length + 1))
+                    cost += self[new_loc]
                     out.append((State(new_loc, d), cost))
         return out
 
     def get_est_cost(self, loc: complex) -> int:
-        return abs(complex(self.width, self.height) - loc)
+        d = complex(self.width - 1, self.height - 1) - loc
+        return d.real + d.imag
 
     def walk(self, lengths: Sequence = range(1, 4)) -> list[State]:
         start = 0 + 0j
         end = complex(self.width, self.height) - (1 + 1j)
         to_check = [(0, State(start, 1)), (0, State(start, 1j))]
         heapq.heapify(to_check)
-        min_costs = {State(start, 1): 0, State(start, 1j): 0}
+        costs = {State(start, 1): 0, State(start, 1j): 0}
 
         while to_check:
             _, state = heapq.heappop(to_check)
+            if state.loc == end:
+                return costs[state]
 
             for new_state, cost in self.next_options(state, lengths):
                 new_loc = new_state.loc
-                new_cost = min_costs[state] + cost
-                if new_state not in min_costs or new_cost < min_costs[
-                        new_state]:
-                    min_costs[new_state] = new_cost
+                new_cost = costs[state] + cost
+                if new_state not in costs or new_cost < costs[new_state]:
+                    costs[new_state] = new_cost
                     sorter = new_cost + self.get_est_cost(new_loc)
                     heapq.heappush(to_check, (sorter, new_state))
 
-        return min(v for k, v in min_costs.items() if k.loc == end)
+        raise RuntimeError("Never reached endpoint")
 
     def sum(self, path: list[complex]) -> int:
         return sum(self[v] for v in path)
@@ -103,7 +107,7 @@ def load_data(path: str) -> Array:
     return Array([[int(x) for x in line] for line in raw])
 
 
-def run(data: Array) -> int:  # pylint: disable=W0613
+def run(data: Array) -> int:
     return data.walk()
 
 
