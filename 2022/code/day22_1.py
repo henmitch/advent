@@ -37,7 +37,7 @@ def run_through(map_: Map, instructions: Instructions) -> Map:
 def test():
     map_, instructions = load_data(TEST_PATH)
     map_ = run_through(map_, instructions)
-    assert map_.value() == 6032
+    assert map_.value() == 5031
 
 
 def main():
@@ -48,4 +48,4 @@ def main():
 
 if __name__ == "__main__":
     test()
-    # main()
+    main()

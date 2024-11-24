@@ -86,7 +86,6 @@ class Map:
 
         # At each step
         for _ in range(steps):
-            print(self.loc)
             # See if we've gone off the board
             if (next_step := self.loc + self.dir_) not in avail:
                 next_step = self.wrap()
@@ -95,7 +94,6 @@ class Map:
                 return self.loc
             self.loc = next_step
 
-        print(self.loc)
         return self.loc
 
     def turn(self, dir_: str) -> complex:
@@ -104,7 +102,8 @@ class Map:
 
     def value(self) -> int:
         dir_mapping = {1 + 0j: 0, 0 + 1j: 1, -1 + 0j: 2, 0 - 1j: 3}
-        return 1000*self.loc.imag + 4*self.loc.real + dir_mapping[self.dir_]
+        return int(1000*self.loc.imag + 4*self.loc.real +
+                   dir_mapping[self.dir_])
 
 
 def load_data(path: str) -> tuple[Map, Instructions]:
