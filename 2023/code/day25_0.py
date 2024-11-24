@@ -10,12 +10,9 @@ DATA_PATH = bp.get_data_path()
 
 class Network:
 
-    def __init__(self, edges: set[frozenset[str, str]]) -> None:
-        self.edges = frozenset(edges)
-        self.nodes = frozenset(node for edge in edges for node in edge)
-
-    def __hash__(self) -> int:
-        return hash(self.edges)
+    def __init__(self, edges: dict[str, frozenset[str]]) -> None:
+        self.edges = edges
+        self.nodes = frozenset(edges.keys())
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Network):
@@ -24,77 +21,83 @@ class Network:
 
     def without(self, nodes: set[str]) -> Network:
         """Return a copy of the network without the given nodes"""
-        edges = self.edges.copy()
-        to_remove = set()
-        for node in nodes:
-            for edge in edges:
-                if node in edge:
-                    to_remove.add(edge)
-        return Network(edges - to_remove)
+        out = {}
+        for node in self.nodes:
+            if node not in nodes:
+                out[node] = self.edges[node] - nodes
+        return Network(out)
 
     def subgraph(self, nodes: set[str]) -> Network:
         """Return a subgraph of the network with only the given nodes"""
-        edges = set()
-        for edge in self.edges:
-            if edge <= nodes:
-                edges.add(edge)
-        return Network(edges)
+        out = {}
+        for node in self.nodes:
+            if node in nodes:
+                out[node] = self.edges[node] & nodes
+        return Network(out)
 
-    def neighbors(self, node: str) -> set[str]:
-        out = set()
-        for edge in self.edges:
-            if node in edge:
-                out.add(edge - node)
-        return out
+    def neighbors_of(self, node: str) -> set[str]:
+        return self.edges[node]
 
     def subgraph_neighbors(self, nodes: set[str]) -> set[str]:
+        """The neighbors of a subgraph, excluding itself"""
         out = set()
         for node in nodes:
-            for edge in self.edges:
-                if node in edge and not edge <= nodes:
-                    out |= edge - {node}
-        return out
+            out |= self.neighbors_of(node)
+        return out - nodes
+
+    def edge_count(self) -> int:
+        return sum(len(self.edges[node]) for node in self.edges)//2
+
+    def most_connected_node(self) -> str:
+        return max(self.nodes, key=lambda x: len(self.edges[x]))
 
 
 def load_data(path: str) -> Network:
     with open(path, "r") as f:
         raw = f.read().splitlines()
-    edges = set()
+    edges = {}
     for line in raw:
-        for pair in _parse(line):
-            if pair not in edges:
-                edges.add(pair)
+        for a, b in _parse(line):
+            edges[a] = edges.get(a, set()) | {b}
+            edges[b] = edges.get(b, set()) | {a}
     return Network(edges)
 
 
-def _parse(line: str) -> list[set]:
+def _parse(line: str) -> list[tuple[str, str]]:
     out = []
     first, friends = line.split(": ")
     for friend in friends.split(" "):
-        out.append(frozenset((first, friend)))
+        out.append((first, friend))
     return out
 
 
 def run(data: Network) -> int:
     # Total number of edges
-    number_of_edges = len(data.edges)
+    number_of_edges = data.edge_count()
     # Start with a random node (the in-subgraph)
     to_check = []
-    heappush(to_check, {next(iter(data.nodes))})
+    seen = set()
+    heappush(to_check, frozenset({data.most_connected_node()}))
+    n = 0
     while to_check:
+        n += 1
+        if not n%1000:
+            print(n, len(to_check), len(seen))
         ins_nodes = heappop(to_check)
         ins = data.subgraph(ins_nodes)
         outs = data.without(ins_nodes)
         # Count the number of connections to the out-subgraph
-        if number_of_edges - (len(ins.edges) + len(outs.edges)) == 3:
+        if number_of_edges - (ins.edge_count() + outs.edge_count()) == 3:
+            # If we have 3, that's our split
+            print(f"{n=}")
             return len(ins.nodes)*len(outs.nodes)
         # If it's more than 3, look at all the subgraphs created by adding
         # each of the neighbors of the in-subgraph to the in-subgraph
         for new_node in data.subgraph_neighbors(ins_nodes):
-            new_graph = ins_nodes | {new_node}
-            if new_graph not in to_check:
+            new_graph = frozenset(ins_nodes | {new_node})
+            if new_graph not in seen:
                 heappush(to_check, new_graph)
-        # Otherwise, we've got our split
+                seen.add(new_graph)
     raise ValueError("Couldn't find the split!")
 
 
