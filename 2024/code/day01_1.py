@@ -1,9 +1,5 @@
 """https://adventofcode.com/2024/day/1"""
-import boilerplate as bp
-from day01_0 import load_data
-
-TEST_PATH = bp.get_test_path()
-DATA_PATH = bp.get_data_path()
+from day01_0 import DATA_PATH, TEST_PATH, load_data
 
 
 def run(data: tuple[list[int], list[int]]) -> int:
