@@ -24,13 +24,7 @@ def is_safeable(line: list[int]) -> bool:
 
 
 def run(data: list[list[int]]) -> int:
-    out = 0
-    for line in data:
-        if is_safeable(line):
-            out += 1
-        else:
-            print(line, [b - a for a, b in zip(line, line[1:])])
-    return out
+    return sum(is_safeable(line) for line in data)
 
 
 def test():
@@ -44,5 +38,5 @@ def main():
 
 
 if __name__ == "__main__":
-    # test()
+    test()
     main()
