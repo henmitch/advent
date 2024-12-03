@@ -16,7 +16,7 @@ def load_data(path: str) -> list[Pair]:
 
 
 def parse(line: str) -> list[Pair]:
-    muls = re.findall(r"mul\((\d+),(\d+)\)", line)
+    muls = re.findall(r"mul\((\d{0,3}),(\d{0,3})\)", line)
     return [(int(a), int(b)) for a, b in muls]
 
 
