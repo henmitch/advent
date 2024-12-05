@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 _cookie = os.environ["AOC_SESSION_COOKIE"]
+_email = os.environ["EMAIL"]
 _url = "https://adventofcode.com/2022/day/{}/input"
 
 data_dir = os.path.join(os.path.dirname(__file__), os.pardir, "data")
@@ -30,7 +31,7 @@ def get_data_path() -> str:
     url = _url.format(day_num())
     cookies = {
         "session": _cookie,
-        "User-agent": "github.com/henmitch/advent at henry@henrymitchell.org"
+        "User-agent": f"github.com/henmitch/advent at {_email}"
     }
 
     data = requests.get(url, cookies=cookies).text
