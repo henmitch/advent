@@ -42,7 +42,7 @@ def is_legal(rules: Ruleset, pages: Pages) -> bool:
     return True
 
 
-def run(data: tuple[Ruleset, list[tuple[int, ...]]]) -> int:
+def run(data: tuple[Ruleset, list[Pages]]) -> int:
     rules, pageses = data
     out = 0
     for pages in pageses:
