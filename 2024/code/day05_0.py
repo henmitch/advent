@@ -1,4 +1,4 @@
-"""https://adventofcode.com/2024/day/05"""
+"""https://adventofcode.com/2024/day/5"""
 import boilerplate as bp
 
 TEST_PATH = bp.get_test_path()

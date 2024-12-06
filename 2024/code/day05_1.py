@@ -1,4 +1,4 @@
-"""https://adventofcode.com/2024/day/05"""
+"""https://adventofcode.com/2024/day/5"""
 import boilerplate as bp
 from day05_0 import DATA_PATH, TEST_PATH, Pages, Ruleset, is_legal, load_data
 

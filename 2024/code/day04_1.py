@@ -1,4 +1,4 @@
-"""https://adventofcode.com/2024/day/04"""
+"""https://adventofcode.com/2024/day/4"""
 import boilerplate as bp
 from day04_0 import DATA_PATH, TEST_PATH
 from day04_0 import Search as OldSearch

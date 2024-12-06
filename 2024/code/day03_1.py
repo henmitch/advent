@@ -1,4 +1,4 @@
-"""https://adventofcode.com/2024/day/03"""
+"""https://adventofcode.com/2024/day/3"""
 import boilerplate as bp
 from day03_0 import DATA_PATH, Pair, parse, run
 
