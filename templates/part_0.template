@@ -1,0 +1,32 @@
+"""https://adventofcode.com/$year/day/$day"""
+import boilerplate as bp
+
+TEST_PATH = bp.get_test_path()
+DATA_PATH = bp.get_data_path()
+
+
+def load_data(path: str) ->...:
+    with open(path, "r") as f:
+        raw = f.read().splitlines()
+    return ...
+
+
+def run(data: ...) -> int:
+    return ...
+
+
+def test():
+    data = load_data(TEST_PATH)
+    assert run(data) == ...
+
+
+def main():
+    data = load_data(DATA_PATH)
+    out = run(data)
+    bp.write_answer(out)
+    print(out)
+
+
+if __name__ == "__main__":
+    test()
+    main()
