@@ -5,7 +5,7 @@ TEST_PATH = bp.get_test_path()
 DATA_PATH = bp.get_data_path()
 
 
-def load_data(path: str) ->...:
+def load_data(path: str) -> ...:
     with open(path, "r") as f:
         raw = f.read().splitlines()
     return ...
