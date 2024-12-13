@@ -1,4 +1,6 @@
 """https://adventofcode.com/2024/day/13"""
+from fractions import Fraction
+
 import boilerplate as bp
 from day13_0 import DATA_PATH, TEST_PATH, Claw, load_data
 
@@ -8,10 +10,10 @@ def post_process(claw: Claw) -> Claw:
     return xa, ya, xb, yb, xp + 10000000000000, yp + 10000000000000
 
 
-def solve(claw: Claw) -> tuple[int, int]:
+def solve(claw: Claw) -> tuple[Fraction, Fraction]:
     xa, ya, xb, yb, xp, yp = claw
-    a = (xb*yp - xp*yb)/(xb*ya - xa*yb)
-    b = (yp - a*ya)/yb
+    a = Fraction(xb*yp - xp*yb, xb*ya - xa*yb)
+    b = Fraction(yp - a*ya, yb)
     return a, b
 
 
@@ -41,5 +43,5 @@ def main():
 
 
 if __name__ == "__main__":
-    # test()
+    test()
     main()
