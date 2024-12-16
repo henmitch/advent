@@ -116,10 +116,8 @@ def run(data: Grid) -> int:
 def test():
     data = load_data(TEST_PATH_0)
     assert run(data) == 7036
-    print("Test 0 passed")
     data = load_data(TEST_PATH_1)
     assert run(data) == 11048
-    print("Test 1 passed")
 
 
 def main():
