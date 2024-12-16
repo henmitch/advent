@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import heapq
 from dataclasses import dataclass
+from math import inf
 
 import boilerplate as bp
 
@@ -44,20 +45,25 @@ class Grid:
             State(manhattan(self.start, self.end), 0, self.start,
                   [self.start - 1, self.start])
         ]
+        min_scores = {self.start: 0}
         while q:
             score, loc, path = heapq.heappop(q)
             if loc == self.end:
-                return score, path
+                return score, path[1:]
 
             step = loc - path[-2]
             for d, d_score in [(step, 1), (step*1j, 1001), (step* -1j, 1001)]:
                 new_loc = loc + d
-                if new_loc in path[:-1] or new_loc in self.walls:
+                if new_loc in path[1:-1] or new_loc in self.walls:
                     continue
+                new_score = score + d_score
+                if new_score >= min_scores.get(new_loc, inf):
+                    continue
+                min_scores[new_loc] = new_score
                 heapq.heappush(
                     q,
-                    State(manhattan(new_loc, self.end), score + d_score,
-                          new_loc, path + [new_loc]))
+                    State(manhattan(new_loc, self.end), new_score,new_loc,
+                          path + [new_loc]))
 
         raise RuntimeError("Never reached endpoint")
 
