@@ -62,16 +62,19 @@ class Grid:
                 min_scores[new_loc] = new_score
                 heapq.heappush(
                     q,
-                    State(manhattan(new_loc, self.end), new_score,new_loc,
+                    State(manhattan(new_loc, self.end), new_score, new_loc,
                           path + [new_loc]))
 
         raise RuntimeError("Never reached endpoint")
 
-    def pretty_print(self, path: list[complex]) -> str:
+    def pretty_print(self, path: list[complex], *extras) -> str:
         out = ""
         for y in range(self.height):
             for x in range(self.width):
                 loc = x + y*1j
+                if loc in extras:
+                    out += bp.colors.GREEN + "*" + bp.colors.END
+                    continue
                 if loc in self.walls:
                     out += "#"
                 elif loc in path:
@@ -83,7 +86,7 @@ class Grid:
                 else:
                     out += " "
             out += "\n"
-        return out
+        return out[:-1]
 
 
 def load_data(path: str) -> Grid:
