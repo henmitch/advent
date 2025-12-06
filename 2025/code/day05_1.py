@@ -1,6 +1,6 @@
 """https://adventofcode.com/2025/day/5"""
 import boilerplate as bp
-from day05_0 import TEST_PATH, DATA_PATH, Pair, Pairs
+from day05_0 import TEST_PATH, DATA_PATH, Pair
 
 
 def load_data(path: str) -> tuple[list[int], list[int]]:
