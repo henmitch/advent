@@ -3,40 +3,54 @@ import boilerplate as bp
 from day09_0 import DATA_PATH, TEST_PATH, load_data, Pair, area
 
 
-def find_adjacents(a: Pair, data: list[Pair]) -> tuple[Pair, Pair]:
-    horiz = [p for p in data if p != a and p[1] == a[1]]
-    verti = [p for p in data if p != a and p[0] == a[0]]
-    assert len(horiz) == 1
-    assert len(verti) == 1
+def sign(x: int) -> int:
+    if x < 0:
+        return -1
+    if x == 0:
+        return 0
+    return 1
 
-    return horiz[0], verti[0]
 
-
-def find_largest_rectangle(a: Pair, data: list[Pair]) -> tuple[Pair, Pair]:
-    # The next corners over
-    horiz, verti = find_adjacents(a, data)
-    # Potential opposite corners
-    potentials = set(find_adjacents(horiz, data) + find_adjacents(verti, data))
-    finalists = {horiz, verti}  # Actual, final candidate opposite corners
-    # Eliminating potentials that aren't within the bounds
-    for p in potentials:
-        if p == a:
-            continue
-        # Too far vertically
-        if p[1] == verti[1] and abs(p[0] - a[0]) > abs(horiz[0] - a[0]):
-            continue
-        # Too far horizontally
-        if p[0] == horiz[0] and abs(p[1] - a[1]) > abs(verti[1] - a[1]):
-            continue
-
-        finalists.add(p)
-
-    print(a, finalists, max(finalists, key=lambda x: area(a, x)))
-    return max(finalists, key=lambda x: area(a, x))
+def v_hat(a: Pair, b: Pair) -> Pair:
+    """The (semi-)normalized vector (y, x) pointing from a to b"""
+    y = sign(b[0] - a[0])
+    x = sign(b[1] - a[1])
+    return y, x
 
 
 def run(data: list[Pair]) -> int:
-    return max(area(p, find_largest_rectangle(p, data)) for p in data)
+    out = 0
+    # Reorder data such that we're starting at a top left corner (and therefore
+    # know which side is the inside).
+    top = min(p[0] for p in data)
+    top_left = min(filter(lambda p: p[0] == top, data), key=lambda p: p[1])
+    top_left_index = data.index(top_left)
+    data = data[top_left_index:] + data[:top_left_index]
+    # Direction towards the inside of the shape
+    # If we go up (y decreases), inside_y is down (+1)
+    # If we go right (x increases), inside_x is left (-1)
+    # Etc.
+    # Because we're currently top left, inside is +1, +1
+    inside_y = 1
+    inside_x = 1
+    for i, point in enumerate(data[:-2]):
+        considering = [data[i - 1], data[i + 1]]
+        # If the next-adjacent corners are inside, consider them
+        for corner in (data[i - 2], data[i + 2]):
+            if v_hat(point, corner) == (inside_y, inside_x):
+                considering.append(corner)
+        print(point, len(considering))
+        out = max(out, max(area(point, corner) for corner in considering))
+
+        # Update our insides
+        next_ = data[i + 1]
+        delta_y, delta_x = v_hat(next_, point)
+        if delta_y:
+            inside_y = -delta_y
+        if delta_x:
+            inside_x = -delta_x
+
+    return out
 
 
 def test():

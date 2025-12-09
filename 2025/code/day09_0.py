@@ -15,7 +15,7 @@ def load_data(path: str) -> list[Pair]:
 
 
 def area(a: Pair, b: Pair) -> int:
-    return abs((a[0] - b[0] + 1)*(a[1] - b[1] + 1))
+    return (abs(a[0] - b[0]) + 1)*(abs(a[1] - b[1]) + 1)
 
 
 def run(data: tuple[int]) -> int:
