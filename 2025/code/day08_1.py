@@ -4,7 +4,6 @@ from day08_0 import DATA_PATH, TEST_PATH, load_data, find_all_dists, Triplet
 
 
 def run(data: list[Triplet]) -> int:
-    out = 0
     dists = find_all_dists(data)
     groups = {box: {box} for box in data}
     box_set = set(data)
